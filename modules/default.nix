@@ -1,0 +1,312 @@
+{
+  pkgs,
+  lib,
+  ...
+}:
+
+{
+  # Bootloader.
+  boot.loader.efi.canTouchEfiVariables = lib.mkDefault true;
+  boot.loader.systemd-boot.enable = lib.mkDefault true;
+  boot.loader.systemd-boot.configurationLimit = lib.mkDefault 10;
+
+  # Plymouth
+  boot.consoleLogLevel = lib.mkDefault 0;
+  boot.initrd.verbose = lib.mkDefault false;
+  boot.loader.timeout = lib.mkDefault 0;
+  boot.plymouth = lib.mkDefault {
+    enable = true;
+    theme = "rings";
+    themePackages = with pkgs; [
+      # By default we would install all themes
+      (adi1090x-plymouth-themes.override {
+        selected_themes = [ "rings" ];
+      })
+    ];
+  };
+
+  # Kernel
+  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
+  boot.kernelParams = lib.mkDefault [
+    "quiet"
+    "splash"
+    "boot.shell_on_fail"
+    "loglevel=3"
+    "rd.systemd.show_status=false"
+    "rd.udev.log_level=3"
+    "udev.log_priority=3"
+  ];
+
+  # Kernel Configuration
+  # https://discourse.nixos.org/t/patching-an-in-tree-linux-kernel-module/22137/2
+  # https://nixos.wiki/wiki/Linux_kernel#Custom_configuration
+  # https://nixos.org/manual/nixos/unstable/index.html#sec-kernel-config
+  #nixpkgs.config.packageOverrides = pkgs: pkgs.lib.recursiveUpdate pkgs {
+  #  linuxKernel.kernels.linux_5_10 = pkgs.linuxKernel.kernels.linux_5_10.override {
+  #    extraConfig = ''
+  #      KGDB y
+  #    '';
+  #  };
+  #};
+
+  # Networking
+  networking.hostName = lib.mkDefault "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
+  networking.networkmanager.enable = lib.mkDefault true;
+  services.avahi.enable = lib.mkDefault true;
+  services.avahi.nssmdns4 = lib.mkDefault true;
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
+  i18n.extraLocaleSettings = lib.mkDefault {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+  };
+
+  # Nix Settings
+  nix.settings = lib.mkDefault {
+    # Enable flakes and new 'nix' command
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    # Deduplicate and optimize nix store
+    auto-optimise-store = true;
+    # Allow sudo users to do dangerous nix things
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
+  };
+  nix.gc = lib.mkDefault {
+    automatic = true;
+    dates = "weekly";
+  };
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = lib.mkDefault true;
+
+  # Allow executing unpackaged binaries
+  services.envfs.enable = lib.mkDefault true;
+  programs.nix-ld.enable = lib.mkDefault true;
+  programs.nix-ld.libraries = lib.mkDefault [
+    pkgs.libiio
+    pkgs.libevdev
+    pkgs.udev
+  ];
+
+  # Configure keymap in X11
+  services.xserver.xkb = lib.mkDefault {
+    layout = "us";
+    variant = "";
+  };
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.gamer = lib.mkDefault {
+    isNormalUser = true;
+    description = "Gamer";
+    initialPassword = "gamer";
+    shell = pkgs.zsh;
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [
+      fzf
+    ];
+  };
+
+  # Audio
+  security.rtkit.enable = lib.mkDefault true;
+  services.pulseaudio.enable = lib.mkDefault false;
+  services.pipewire = lib.mkDefault {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+    extraConfig = {
+      pipewire."92-latency" = {
+        "context.properties" = {
+          "default.clock.rate" = 48000;
+          "default.clock.quantum" = 1024;
+          "default.clock.min-quantum" = 1024;
+          "default.clock.max-quantum" = 1024;
+        };
+      };
+      pipewire-pulse."92-latency" = {
+        "context.properties" = [
+          {
+            name = "libpipewire-module-protocol-pulse";
+            args = { };
+          }
+        ];
+        "pulse.properties" = {
+          "pulse.min.req" = "1024/48000";
+          "pulse.default.req" = "1024/48000";
+          "pulse.max.req" = "1024/48000";
+          "pulse.min.quantum" = "1024/48000";
+          "pulse.max.quantum" = "1024/48000";
+        };
+        "stream.properties" = {
+          "node.latency" = "1024/48000";
+          "resample.quality" = 1;
+        };
+      };
+    };
+  };
+
+  # Graphics
+  hardware.graphics = lib.mkDefault {
+    enable = true;
+    enable32Bit = true;
+  };
+  services.xserver.videoDrivers = lib.mkDefault [ "amdgpu" ];
+
+  # Firmware
+  services.fwupd.enable = lib.mkDefault true;
+
+  # Display Manager
+  services.xserver.enable = lib.mkDefault true;
+  services.xserver.displayManager = lib.mkDefault {
+    lightdm = {
+      enable = true;
+      greeter.enable = false;
+    };
+  };
+  services.displayManager = lib.mkDefault {
+    defaultSession = "opengamepadui";
+    #defaultSession = "steam";
+    autoLogin = {
+      enable = true;
+      user = "gamer";
+    };
+  };
+
+  # Software
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.pathsToLink = lib.mkDefault [ "/share" ];
+  environment.systemPackages = lib.mkDefault [
+    pkgs.appimage-run
+    pkgs.bc
+    pkgs.btop-rocm
+    pkgs.bubblewrap
+    pkgs.ccze
+    pkgs.curl
+    pkgs.distrobox
+    pkgs.ethtool
+    pkgs.evtest
+    pkgs.ffmpeg-full
+    pkgs.file
+    pkgs.fzf
+    pkgs.gamescope
+    pkgs.git
+    pkgs.glxinfo
+    pkgs.gnumake
+    pkgs.hid-tools
+    pkgs.hwdata
+    pkgs.jq
+    pkgs.mangohud
+    pkgs.pciutils
+    pkgs.pstree
+    pkgs.ryzenadj
+    pkgs.screen
+    pkgs.tree
+    pkgs.unzip
+    pkgs.usbutils
+    pkgs.vulkan-tools
+    pkgs.wget
+    pkgs.xorg.xprop
+    pkgs.xorg.xwininfo
+    pkgs.yq
+    pkgs.zip
+  ];
+
+  # Flatpak
+  xdg.portal.config.common.default = lib.mkDefault "*";
+  xdg.portal.wlr.enable = lib.mkDefault true;
+  xdg.portal.enable = lib.mkDefault true;
+  services.flatpak.enable = lib.mkDefault true;
+
+  # Battery/Power
+  services.upower = lib.mkDefault {
+    enable = true;
+  };
+
+  # Bluetooth
+  hardware.bluetooth.enable = lib.mkDefault true;
+  hardware.bluetooth.powerOnBoot = lib.mkDefault true;
+
+  # Editor
+  programs.neovim = lib.mkDefault {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+  };
+
+  # Shell
+  programs.zsh = lib.mkDefault {
+    enable = true;
+    enableCompletion = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+    ohMyZsh = {
+      enable = true;
+      plugins = [
+        "git"
+        "fzf"
+      ];
+      theme = "agnoster";
+    };
+    histSize = 10000000;
+  };
+  programs.fzf = lib.mkDefault {
+    fuzzyCompletion = true;
+    keybindings = true;
+  };
+
+  # Firefox
+  programs.firefox.enable = lib.mkDefault true;
+
+  # OpenGamepadUI
+  programs.opengamepadui = lib.mkDefault {
+    enable = true;
+    inputplumber.enable = true;
+    powerstation.enable = true;
+    package = (
+      pkgs.opengamepadui.override {
+        withDebug = true;
+      }
+    );
+    gamescopeSession.enable = true;
+    gamescopeSession.env = {
+      DBUS_FATAL_WARNINGS = "0";
+      LOG_LEVEL = "debug";
+    };
+  };
+
+  # Steam
+  programs.steam.enable = lib.mkDefault true;
+  programs.steam.remotePlay.openFirewall = lib.mkDefault true;
+  programs.steam.localNetworkGameTransfers.openFirewall = lib.mkDefault true;
+  #programs.steam.gamescopeSession.enable = true;
+  programs.gamemode.enable = lib.mkDefault true;
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = lib.mkDefault true;
+}

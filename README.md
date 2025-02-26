@@ -1,27 +1,74 @@
 # OS Flake
 
-Locally switch
+This flake will configure your system to boot directly into OpenGamepadUI.
 
-```bash
-sudo nixos-rebuild switch --flake /path/to/your/flake#your-hostname
+## Requirements
+
+Currently this flake requires NixOS to already be installed and the "flakes"
+feature enabled.
+
+To enable flakes on your system, add the following to your `/etc/nixos/configuration.nix`:
+
+```
+nix.settings.experimental-features = [ "nix-command" "flakes" ];
 ```
 
-Remotely switch
+Then enable it with:
 
-```bash
-sudo nixos-rebuild switch --flake github:owner/repo#your-hostname
+```
+sudo nixos-rebuild switch
 ```
 
-Using `--impure` may be necessary in order to import `/etc/nixos/hardware-configuration.nix`
+## Usage
 
-* Maybe use disko instead of `/etc/nixos/hardware-configuration.nix`?
-https://github.com/nix-community/disko
+Add the following to: `/etc/nixos/flake.nix`:
 
-```bash
-nixos-rebuild --target-host gamer@192.168.0.41 --use-remote-sudo --impure --flake .#nixos switch
+```
+{
+  description = "A very basic flake";
+
+  inputs = {
+    shadowblip.url = "gitlab:shadowapex/os-flake?ref=main";
+  };
+
+  outputs =
+    inputs@{
+      self,
+      shadowblip,
+    }:
+    {
+
+      # You can replace "nixos" with your hostname
+      nixosConfigurations.nixos = shadowblip.inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        # Allows `inputs` to be used in configuration
+        specialArgs = { inherit inputs; };
+        modules = [
+          shadowblip.nixosModules.default
+          ./configuration.nix
+        ];
+      };
+
+    };
+}
 ```
 
-# Updater
+Then enable it with:
 
-- Check repo for new release
-- New release will run rebuild against branch?
+```
+sudo nixos-rebuild switch
+```
+
+## Updates
+
+To update, run:
+
+```
+cd /etc/nixos/
+sudo nix flake update
+```
+
+## Customization
+
+You can customize your installation like any other NixOS system by editing
+`/etc/nixos/configuration.nix` and running `sudo nixos-rebuild switch`.
