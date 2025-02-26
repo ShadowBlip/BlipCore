@@ -181,18 +181,18 @@
 
   # Display Manager
   services.xserver.enable = lib.mkDefault true;
-  services.xserver.displayManager = lib.mkDefault {
+  services.xserver.displayManager = {
     lightdm = {
-      enable = true;
-      greeter.enable = false;
+      enable = lib.mkDefault true;
+      greeter.enable = lib.mkDefault false;
     };
   };
-  services.displayManager = lib.mkDefault {
-    defaultSession = "opengamepadui";
+  services.displayManager = {
+    defaultSession = lib.mkDefault "opengamepadui";
     #defaultSession = "steam";
     autoLogin = {
-      enable = true;
-      user = "gamer";
+      enable = lib.mkDefault true;
+      user = lib.mkDefault "gamer";
     };
   };
 
@@ -244,8 +244,8 @@
   services.flatpak.enable = lib.mkDefault true;
 
   # Battery/Power
-  services.upower = lib.mkDefault {
-    enable = true;
+  services.upower = {
+    enable = lib.mkDefault true;
   };
 
   # Bluetooth
@@ -284,16 +284,11 @@
   programs.firefox.enable = lib.mkDefault true;
 
   # OpenGamepadUI
-  programs.opengamepadui = lib.mkDefault {
-    enable = true;
-    inputplumber.enable = true;
-    powerstation.enable = true;
-    package = (
-      pkgs.opengamepadui.override {
-        withDebug = true;
-      }
-    );
-    gamescopeSession.enable = true;
+  programs.opengamepadui = {
+    enable = lib.mkDefault true;
+    inputplumber.enable = lib.mkDefault true;
+    powerstation.enable = lib.mkDefault true;
+    gamescopeSession.enable = lib.mkDefault true;
     gamescopeSession.env = {
       DBUS_FATAL_WARNINGS = "0";
       LOG_LEVEL = "debug";
