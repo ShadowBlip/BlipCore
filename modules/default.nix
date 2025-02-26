@@ -201,40 +201,40 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.pathsToLink = lib.mkDefault [ "/share" ];
-  environment.systemPackages = lib.mkDefault [
-    pkgs.appimage-run
-    pkgs.bc
-    pkgs.btop-rocm
-    pkgs.bubblewrap
-    pkgs.ccze
-    pkgs.curl
-    pkgs.distrobox
-    pkgs.ethtool
-    pkgs.evtest
-    pkgs.ffmpeg-full
-    pkgs.file
-    pkgs.fzf
-    pkgs.gamescope
-    pkgs.git
-    pkgs.glxinfo
-    pkgs.gnumake
-    pkgs.hid-tools
-    pkgs.hwdata
-    pkgs.jq
-    pkgs.mangohud
-    pkgs.pciutils
-    pkgs.pstree
-    pkgs.ryzenadj
-    pkgs.screen
-    pkgs.tree
-    pkgs.unzip
-    pkgs.usbutils
-    pkgs.vulkan-tools
-    pkgs.wget
-    pkgs.xorg.xprop
-    pkgs.xorg.xwininfo
-    pkgs.yq
-    pkgs.zip
+  environment.systemPackages = with pkgs; [
+    appimage-run
+    bc
+    btop-rocm
+    bubblewrap
+    ccze
+    curl
+    distrobox
+    ethtool
+    evtest
+    ffmpeg-full
+    file
+    fzf
+    gamescope
+    git
+    glxinfo
+    gnumake
+    hid-tools
+    hwdata
+    jq
+    mangohud
+    pciutils
+    pstree
+    ryzenadj
+    screen
+    tree
+    unzip
+    usbutils
+    vulkan-tools
+    wget
+    xorg.xprop
+    xorg.xwininfo
+    yq
+    zip
   ];
 
   # Flatpak
