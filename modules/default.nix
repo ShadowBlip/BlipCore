@@ -77,23 +77,23 @@
   };
 
   # Nix Settings
-  nix.settings = lib.mkDefault {
+  nix.settings = {
     # Enable flakes and new 'nix' command
-    experimental-features = [
+    experimental-features = lib.mkDefault [
       "nix-command"
       "flakes"
     ];
     # Deduplicate and optimize nix store
-    auto-optimise-store = true;
+    auto-optimise-store = lib.mkDefault true;
     # Allow sudo users to do dangerous nix things
     trusted-users = [
       "root"
       "@wheel"
     ];
   };
-  nix.gc = lib.mkDefault {
-    automatic = true;
-    dates = "weekly";
+  nix.gc = {
+    automatic = lib.mkDefault true;
+    dates = lib.mkDefault "weekly";
   };
 
   # Allow unfree packages
