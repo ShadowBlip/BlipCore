@@ -181,6 +181,8 @@
     hid-tools
     hwdata
     jq
+    legendary-gl
+    legendary-heroic
     mangohud
     pciutils
     pstree
