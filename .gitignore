@@ -1,0 +1,5 @@
+.cache
+settings.mk
+local.nix
+result
+result-dev

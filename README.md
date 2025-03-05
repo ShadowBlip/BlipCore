@@ -72,3 +72,22 @@ sudo nix flake update
 
 You can customize your installation like any other NixOS system by editing
 `/etc/nixos/configuration.nix` and running `sudo nixos-rebuild switch`.
+
+## Testing
+
+You can test building this flake configuration without switching to it with:
+
+```bash
+make test
+```
+
+This command will create a `result` symlink in the current directory with
+the built OS configuration.
+
+## Remote Updating
+
+You can build this flake locally and push it to a remote device with:
+
+```bash
+make deploy SSH_HOST=x.x.x.x
+```
