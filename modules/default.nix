@@ -189,6 +189,7 @@
     ryzenadj
     screen
     tree
+    umu-launcher
     unzip
     usbutils
     vulkan-tools
