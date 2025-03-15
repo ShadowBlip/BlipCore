@@ -61,9 +61,6 @@ in-docker:
 	docker run -it \
 		--rm \
 		-v "$(PWD):/src" \
-		-w /src \
-		-e HOME=/tmp \
-		-e NIX_PROFILE=/tmp \
-		--user $(shell id -u):$(shell id -g) \
+		-w /root \
 		nixos/nix:latest \
-		nix-shell -p gnumake --run "make $(TARGET)"
+		bash -c 'cp -r /src ./ && chown -R root:root ./src && nix-shell -p gnumake --run "make -C src $(TARGET)"'
