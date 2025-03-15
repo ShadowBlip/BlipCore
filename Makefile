@@ -44,10 +44,26 @@ deploy: ## Build and deploy the flake to a remote host
 
 .PHONY: iso
 iso: ## Build an ISO installer image
-	nix build .#nixosConfigurations.iso.config.system.build.isoImage
+	nix \
+		--extra-experimental-features nix-command \
+		--extra-experimental-features flakes \
+		build .#nixosConfigurations.iso.config.system.build.isoImage
 
 
 .PHONY: clean
 clean:
 	rm -rf result
 	sudo nix-collect-garbage
+
+
+.PHONY: in-docker
+in-docker:
+	docker run -it \
+		--rm \
+		-v "$(PWD):/src" \
+		-w /src \
+		-e HOME=/tmp \
+		-e NIX_PROFILE=/tmp \
+		--user $(shell id -u):$(shell id -g) \
+		nixos/nix:latest \
+		nix-shell -p gnumake --run "make $(TARGET)"
