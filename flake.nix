@@ -22,6 +22,7 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
             "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
             ./modules/installer/cd-dvd/installation-cd.nix
+            ./modules/installer/cd-dvd/gamepad-os-installer.nix
           ];
         };
       };

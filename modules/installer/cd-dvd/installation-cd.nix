@@ -61,7 +61,7 @@
     };
   };
   services.displayManager = {
-    defaultSession = "opengamepadui";
+    defaultSession = "gamepad-os-installer";
     autoLogin = {
       enable = true;
       user = "nixos";
@@ -119,14 +119,12 @@
     vimAlias = true;
   };
 
-  # OpenGamepadUI
-  programs.opengamepadui = {
+  # Installer
+  programs.gamepad-os-installer = {
     enable = true;
     gamescopeSession.enable = true;
-    gamescopeSession.env = {
-      DBUS_FATAL_WARNINGS = "0";
-      LOG_LEVEL = "debug";
-    };
+    #package = (pkgs.callPackage ../../../pkgs/by-name/ga/gamepad-os-installer/package.nix { });
+    package = (pkgs.callPackage ../../../pkgs/by-name/ga/gamepad-os-installer/local.nix { });
   };
 
   # Audio

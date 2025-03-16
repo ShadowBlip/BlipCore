@@ -47,7 +47,7 @@ iso: ## Build an ISO installer image
 	nix \
 		--extra-experimental-features nix-command \
 		--extra-experimental-features flakes \
-		build .#nixosConfigurations.iso.config.system.build.isoImage
+		build --impure .#nixosConfigurations.iso.config.system.build.isoImage
 
 
 .PHONY: clean
