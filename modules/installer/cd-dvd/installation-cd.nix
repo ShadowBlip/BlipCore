@@ -123,8 +123,8 @@
   programs.gamepad-os-installer = {
     enable = true;
     gamescopeSession.enable = true;
-    #package = (pkgs.callPackage ../../../pkgs/by-name/ga/gamepad-os-installer/package.nix { });
-    package = (pkgs.callPackage ../../../pkgs/by-name/ga/gamepad-os-installer/local.nix { });
+    package = (pkgs.callPackage ../../../pkgs/by-name/ga/gamepad-os-installer/package.nix { });
+    #package = (pkgs.callPackage ../../../pkgs/by-name/ga/gamepad-os-installer/local.nix { });
   };
 
   # Audio
