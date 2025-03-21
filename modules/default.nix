@@ -7,6 +7,7 @@
 {
   imports = [
     ./boot
+    ./devices
   ];
 
   # Networking
@@ -223,6 +224,7 @@
   };
 
   # Shell
+  system.userActivationScripts.zshrc = "touch .zshrc";
   programs.zsh = lib.mkDefault {
     enable = true;
     enableCompletion = true;
