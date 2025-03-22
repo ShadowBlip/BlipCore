@@ -39,13 +39,16 @@ let
     check_for_update() {
       cd /etc/nixos
       nix flake update --output-lock-file /tmp/flake.lock
+      set +e
       diff /tmp/flake.lock flake.lock > /dev/null 2>&1
       echo $?
       rm -f /tmp/flake.lock
+      set -e
     }
 
     set_branch() {
       echo "Setting branch to: $1"
+      sed -i "s|gitlab:shadowapex/os-flake?ref=.*\"|gitlab:shadowapex/os-flake?ref=$1\"|g" /etc/nixos/flake.nix
     }
 
     # Get the options
