@@ -45,7 +45,7 @@ let
     }
 
     set_branch() {
-      echo "Setting branch to: ${1}"
+      echo "Setting branch to: $1"
     }
 
     # Get the options
