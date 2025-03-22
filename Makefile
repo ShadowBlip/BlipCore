@@ -38,6 +38,7 @@ deploy: ## Build and deploy the flake to a remote host
 	@mkdir -p $(DEPLOY_DIR)
 	@echo "Copying hardware configuration from $(SSH_HOST)..."
 	scp $(SSH_USER)@$(SSH_HOST):/etc/nixos/*.nix $(DEPLOY_DIR)
+	scp $(SSH_USER)@$(SSH_HOST):/etc/nixos/*.json $(DEPLOY_DIR)
 	cp ./test/flake.nix $(DEPLOY_DIR)
 	sed -i 's|shadowblip.url = "path:.."|shadowblip.url = "$(PWD)"|g' $(DEPLOY_DIR)/flake.nix
 	nixos-rebuild --target-host $(SSH_USER)@$(SSH_HOST) --use-remote-sudo --impure --flake $(DEPLOY_DIR)/#nixos switch
