@@ -3,15 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
   };
 
   outputs =
-    { self, nixpkgs }:
+    inputs@{ nixpkgs, ... }:
     {
 
       nixosModules = rec {
         default = shadowblip;
         shadowblip = ./modules;
+        nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
       };
 
       nixosConfigurations = {

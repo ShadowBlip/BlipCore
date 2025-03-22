@@ -89,6 +89,7 @@
     hwdata
     jq
     mangohud
+    nixos-facter
     pciutils
     pstree
     screen

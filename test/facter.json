@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "system": "x86_64-linux",
+  "virtualisation": "none",
+  "hardware": {
+    "cpu": [
+      {
+        "architecture": "x86_64",
+        "vendor_name": "AuthenticAMD",
+        "features": [
+          "um"
+        ]
+      }
+    ]
+  },
+  "smbios": {
+    "system": {
+      "manufacturer": "ONEXPLAYER",
+      "product": "ONEXPLAYER mini A07"
+    }
+  }
+}

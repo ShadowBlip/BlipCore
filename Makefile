@@ -27,6 +27,7 @@ test: ## Build a test build of the flake OS configuration
 	@rm -rf /tmp/test-flake
 	@mkdir -p /tmp/test-flake
 	cp ./test/*.nix /tmp/test-flake
+	cp ./test/*.json /tmp/test-flake
 	sed -i 's|shadowblip.url = "path:.."|shadowblip.url = "$(PWD)"|g' /tmp/test-flake/flake.nix
 	nixos-rebuild build --impure --flake /tmp/test-flake/#nixos
 

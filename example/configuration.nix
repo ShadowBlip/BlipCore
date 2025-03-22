@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  # Path to the output of `nixos-facter` json
+  facter.reportPath = ./facter.json;
+
   # Use a local build of InputPlumber
   services.inputplumber = {
     enable = true;

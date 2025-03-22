@@ -23,7 +23,7 @@ let
     "ONEXPLAYER 2 PRO ARP23P EVA-01"
   ];
 
-  is_onexplayer = builtins.elem config.hardware.dmi.product_name products;
+  is_onexplayer = builtins.elem (config.facter.report.smbios.system.product or "") products;
 in
 
 {

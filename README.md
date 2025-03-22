@@ -15,8 +15,14 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 Then enable it with:
 
-```
+```bash
 sudo nixos-rebuild switch
+```
+
+Then generate a hardware report with `nixos-facter`:
+
+```bash
+nix-shell -p nixos-facter --run "sudo nixos-facter -o /etc/nixos/facter.json"
 ```
 
 ## Usage

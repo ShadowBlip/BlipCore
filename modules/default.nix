@@ -1,11 +1,13 @@
 {
   pkgs,
   lib,
+  inputs,
   ...
 }:
 
 {
   imports = [
+    inputs.shadowblip.nixosModules.nixos-facter
     ./boot
     ./devices
   ];
@@ -185,6 +187,7 @@
     legendary-gl
     legendary-heroic
     mangohud
+    nixos-facter
     pciutils
     pstree
     ryzenadj
