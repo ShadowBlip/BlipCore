@@ -24,6 +24,7 @@ in
   config = lib.mkIf cfg.enable {
     boot.kernelParams = lib.mkOverride 100 [
       "fbcon=rotate:3"
+      "video=eDP-1:panel_orientation=left_side_up"
     ];
   };
 }
