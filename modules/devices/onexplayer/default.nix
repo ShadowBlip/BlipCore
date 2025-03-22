@@ -28,6 +28,7 @@ in
 
 {
   imports = [
+    ./boot.nix
     ./gamescope.nix
   ];
 

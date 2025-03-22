@@ -35,13 +35,17 @@ in
 
   # Kernel
   boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
-  boot.kernelParams = lib.mkDefault [
-    "quiet"
-    "splash"
+  boot.kernelParams = lib.mkOverride 100 [
+    "audit=0"
     "boot.shell_on_fail"
+    "fbcon=vc:4-6"
+    "iomem=relaxed"
+    "log_buf_len=4M"
     "loglevel=3"
+    "quiet"
     "rd.systemd.show_status=false"
     "rd.udev.log_level=3"
+    "splash"
     "udev.log_priority=3"
   ];
 

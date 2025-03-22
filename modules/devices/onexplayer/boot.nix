@@ -10,23 +10,20 @@ in
 {
   options = {
     hardware.devices.onexplayer = {
-      enableGamescopeRotation = lib.mkOption {
+      enableConsoleRotation = lib.mkOption {
         default = cfg.enable;
         defaultText = lib.literalExpression "config.hardware.devices.onexplayer.enable";
         type = lib.types.bool;
         description = ''
-          Whether to rotate the display panel in gamescope.
+          Whether to rotate the console.
         '';
       };
     };
   };
 
   config = lib.mkIf cfg.enable {
-    programs.opengamepadui.gamescopeSession.args = lib.mkOptionDefault [
-      "--generate-drm-mode"
-      "fixed"
-      "--force-orientation"
-      "left"
+    boot.kernelParams = lib.mkOverride 100 [
+      "fbcon=rotate:3"
     ];
   };
 }
