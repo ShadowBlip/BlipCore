@@ -10,6 +10,7 @@
     inputs.shadowblip.nixosModules.nixos-facter
     ./boot
     ./devices
+    ./updater
   ];
 
   # Networking
@@ -272,4 +273,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = lib.mkDefault true;
+
+  # OS Updater script
+  programs.os-updater.enable = lib.mkDefault true;
 }
