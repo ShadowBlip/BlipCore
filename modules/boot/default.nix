@@ -1,16 +1,8 @@
 {
   pkgs,
-  config,
   lib,
   ...
 }:
-
-let
-  hid-steam = pkgs.callPackage ../../pkgs/by-name/hi/hid-steam/package.nix {
-    # Make sure the module targets the same kernel as system is using.
-    kernel = config.boot.kernelPackages.kernel;
-  };
-in
 
 {
   # Bootloader.
@@ -47,10 +39,6 @@ in
     "rd.udev.log_level=3"
     "splash"
     "udev.log_priority=3"
-  ];
-
-  boot.extraModulePackages = [
-    hid-steam
   ];
 
   # Kernel Configuration
