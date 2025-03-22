@@ -8,7 +8,7 @@
 let
   cfg = config.programs.os-updater;
   os-updater = pkgs.writeShellScriptBin "os-updater" ''
-    set -eu
+    set -e
 
     if [[ $EUID -ne 0 ]]; then
       exec pkexec --disable-internal-agent "$0" "$@"
@@ -49,7 +49,7 @@ let
     }
 
     # Get the options
-    case $1 in
+    case "$1" in
       "help" | "-h" | "--help") # display help
         help
         ;;
@@ -67,7 +67,7 @@ let
           help
           exit 1
         fi
-        set_branch $2
+        set_branch "$2"
         ;;
       *) # Invalid command
         echo "Error: Invalid command"
