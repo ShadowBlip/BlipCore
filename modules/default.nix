@@ -188,6 +188,7 @@
     legendary-gl
     legendary-heroic
     mangohud
+    moonlight-qt
     nixos-facter
     pciutils
     pstree
@@ -270,6 +271,14 @@
   programs.steam.localNetworkGameTransfers.openFirewall = lib.mkDefault true;
   #programs.steam.gamescopeSession.enable = true;
   programs.gamemode.enable = lib.mkDefault true;
+
+  # Sunshine Streaming
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true;
+    openFirewall = true;
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = lib.mkDefault true;
