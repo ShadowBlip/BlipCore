@@ -17,9 +17,188 @@ let
     pkgs.writeShellScriptBin "gamepad-os-installer-gamescope" ''
       ${builtins.concatStringsSep "\n" exports}
 
-      # Enable Mangoapp
-      export MANGOHUD_CONFIGFILE=$(mktemp /tmp/mangohud.XXXXXXXX)
-      export RADV_FORCE_VRS_CONFIG_FILE=$(mktemp /tmp/radv_vrs.XXXXXXXX)
+      # Device quirks from ChimeraOS gamescope-session-plus
+      # https://github.com/ChimeraOS/gamescope-session/blob/main/usr/share/gamescope-session-plus/device-quirks
+      SYS_ID="$(cat /sys/devices/virtual/dmi/id/product_name)"
+      CPU_VENDOR="$(lscpu | grep "Vendor ID" | cut -d : -f 2 | xargs)"
+
+      # OXP 60Hz Devices
+      OXP_LIST="ONE XPLAYER:ONEXPLAYER 1 T08:ONEXPLAYER 1S A08:ONEXPLAYER 1S T08:ONEXPLAYER mini A07:ONEXPLAYER mini GA72:ONEXPLAYER mini GT72:ONEXPLAYER Mini Pro:ONEXPLAYER GUNDAM GA72:ONEXPLAYER 2 ARP23:ONEXPLAYER 2 PRO ARP23H:ONEXPLAYER 2 PRO ARP23P:ONEXPLAYER 2 PRO ARP23P EVA-01"
+      AOK_LIST="AOKZOE A1 AR07:AOKZOE A1 Pro"
+      if [[ ":$OXP_LIST:" =~ ":$SYS_ID:"  ]] || [[  ":$AOK_LIST:" =~ ":$SYS_ID:"   ]]; then
+        DRM_MODE=fixed
+        PANEL_TYPE=external
+        ORIENTATION=left
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,60
+      fi
+
+      # OXP 120Hz Devices
+      OXP_120_LIST="ONEXPLAYER F1:ONEXPLAYER F1 EVA-01"
+      if [[ ":$OXP_120_LIST:" =~ ":$SYS_ID:"  ]]; then
+        PANEL_TYPE=external
+        ORIENTATION=left
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,120
+      fi
+
+      # OXP X1 Devices
+      OXP_X1_LIST="ONEXPLAYER X1 A"
+      if [[ ":$OXP_X1_LIST:" =~ ":$SYS_ID:"  ]]; then
+        PANEL_TYPE=external
+        ORIENTATION=left
+        CUSTOM_REFRESH_RATES=60,120
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=60,120
+      fi
+
+      # OXP X1 144Hz Devices
+      OXP_X1_144_LIST="ONEXPLAYER X1 mini"
+      if [[ ":$OXP_X1_144_LIST:" =~ ":$SYS_ID:"  ]]; then
+        PANEL_TYPE=external
+        ORIENTATION=left
+        CUSTOM_REFRESH_RATES=60,144
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=60,144
+      fi
+
+      # AYANEO AIR, SLIDE, and FLIP Keyboard Devices
+      AIR_LIST="AIR:AIR Pro:AIR Plus:SLIDE:FLIP KB:"
+      if [[ ":$AIR_LIST:" =~ ":$SYS_ID:"  ]]; then
+        PANEL_TYPE=external
+        ORIENTATION=left
+      fi
+
+      # AYANEO FLIP Dual Screen
+      if [[ ":FLIP DS:" =~ ":$SYS_ID:" ]]; then
+        PANEL_TYPE=external
+        ORIENTATION=left
+        OUTPUT_CONNECTOR='*,eDP-1,eDP-2' # prefer the top screen
+      fi
+
+      # AYN Loki Devices
+      AYN_LIST="Loki Max:Loki Zero:Loki MiniPro"
+      if [[ ":$AYN_LIST:" =~ ":$SYS_ID:"  ]]; then
+        DRM_MODE=fixed
+        ORIENTATION=left
+        CUSTOM_REFRESH_RATES=40,50,60
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,60
+      fi
+
+      # GDP Win devices
+      GDP_LIST="G1619-01:G1621-02:MicroPC:WIN2"
+      if [[ ":$GDP_LIST:" =~ ":$SYS_ID:"  ]]; then
+        OUTPUT_CONNECTOR='*,DSI-1'
+        DRM_MODE=fixed
+        ORIENTATION=right
+      fi
+
+      # GPD Win 3 specifc quirk to prevent crashing
+        # The GPD Win 3 does not support hardware rotation for 270/90 modes. We need to implement shader rotations to get this working correctly.
+        # 0/180 rotations should work.
+      if [[ ":G1618-03:" =~ ":$SYS_ID:"  ]]; then
+        OUTPUT_CONNECTOR='*,DSI-1'
+        DRM_MODE=fixed
+        ORIENTATION=right
+      fi
+
+      #GPD Win 4 supports 40-60hz refresh rate changing
+      if [[ ":G1618-04:" =~ ":$SYS_ID:"  ]]; then
+        CUSTOM_REFRESH_RATES=40,60
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,60
+      fi
+
+      # GPD Win Max 2 supports 40,60hz
+      if [[ ":G1619-04:" =~ ":$SYS_ID:"  ]]; then
+        CUSTOM_REFRESH_RATES=40,60
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,60
+      fi
+
+      # GPD Win mini
+      if [[ ":G1617-01:" =~ ":$SYS_ID:"  ]]; then
+        ORIENTATION=""
+        if ( xrandr --prop 2>$1 | grep -e "1080x1920 " > /dev/null ) ; then
+           ORIENTATION=right
+        fi
+      fi
+
+      # Steam Deck (Common)
+      if [[ ":Jupiter:Galileo:" =~ ":$SYS_ID:" ]]; then
+        DRM_MODE=fixed
+      fi
+
+      # Steam Deck (LCD)
+      if [[ ":Jupiter:" =~ ":$SYS_ID:" ]]; then
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,60
+      fi
+
+      # Steam Deck (OLED)
+      if [[ ":Galileo:" =~ ":$SYS_ID:" ]]; then
+        export STEAM_DISPLAY_REFRESH_LIMITS=45,90
+
+        export STEAM_GAMESCOPE_FORCE_HDR_DEFAULT=1
+        export STEAM_GAMESCOPE_FORCE_OUTPUT_TO_HDR10PQ_DEFAULT=1
+        export STEAM_ENABLE_STATUS_LED_BRIGHTNESS=1
+
+      fi
+
+      # ROG Ally & ROG Ally X
+      ALLY_LIST="ROG Ally RC71L_RC71L:ROG Ally RC71L:ROG Ally X RC72LA"
+      if [[ ":$ALLY_LIST:" =~ ":$SYS_ID:"  ]]; then
+        PANEL_TYPE=external
+        ADAPTIVE_SYNC=1
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=40,120
+      fi
+
+      # Lenovo Legion Go
+      if [[ ":83E1:" =~ ":$SYS_ID:"  ]]; then
+        ORIENTATION=left
+        CUSTOM_REFRESH_RATES=60,144
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=60,144
+      fi
+
+      # Minisforum V3
+      if [[ ":V3:" =~ ":$SYS_ID:"  ]]; then
+        PANEL_TYPE=external
+        ADAPTIVE_SYNC=1
+
+        # Set refresh rate range and enable refresh rate switching
+        export STEAM_DISPLAY_REFRESH_LIMITS=36,165
+      fi
+
+      # XG mobile for ASUS laptops that supports the proprietary connector
+      xg_mobile_file_path="/sys/devices/virtual/firmware-attributes/asus-armoury/attributes/egpu_enable/current_value"
+      if [ -f "$xg_mobile_file_path" ]; then
+        egpu_status=$(<"$xg_mobile_file_path")
+        if [[ "$egpu_status" -ne 0 ]]; then
+          unset STEAM_DISPLAY_REFRESH_LIMITS
+
+          # XG Mobile 2023: NVIDIA 4090
+          if lspci -nn | grep -Fq "10de:2717"; then
+            export VULKAN_ADAPTER="10de:2717"
+          fi
+
+          # XG Mobile 2022: AMD RX 6850xt
+          if lspci -nn | grep -Fq "1002:73df"; then
+            export VULKAN_ADAPTER="1002:73df"
+          fi
+
+          # XG Mobile 2021: NVIDIA 3080
+          if lspci -nn | grep -q "10de:249c"; then
+            export VULKAN_ADAPTER="1002:249c"
+          fi
+        fi
+      fi
 
       # Plop GAMESCOPE_MODE_SAVE_FILE into $XDG_CONFIG_HOME (defaults to ~/.config).
       export GAMESCOPE_MODE_SAVE_FILE="''${XDG_CONFIG_HOME:-$HOME/.config}/gamescope/modes.cfg"
@@ -33,14 +212,9 @@ let
       mkdir -p "$(dirname "$GAMESCOPE_PATCHED_EDID_FILE")"
       touch "$GAMESCOPE_PATCHED_EDID_FILE"
 
-      # Initially write no_display to our config file
-      # so we don't get mangoapp showing up before installer initializes
-      # on OOBE and stuff.
-      mkdir -p "$(dirname "$MANGOHUD_CONFIGFILE")"
-      echo "no_display" >"$MANGOHUD_CONFIGFILE"
-
       # Prepare our initial VRS config file
       # for dynamic VRS in Mesa.
+      export RADV_FORCE_VRS_CONFIG_FILE=$(mktemp /tmp/radv_vrs.XXXXXXXX)
       mkdir -p "$(dirname "$RADV_FORCE_VRS_CONFIG_FILE")"
       echo "1x1" >"$RADV_FORCE_VRS_CONFIG_FILE"
 
@@ -65,9 +239,59 @@ let
       mkfifo -- "$stats"
       mkfifo -- "$socket"
 
+      # Build the gamescope command
+      ORIENTATION_OPTION=""
+      if [ -n "$ORIENTATION" ] ; then
+      	ORIENTATION_OPTION="--force-orientation $ORIENTATION"
+      fi
+
+      DRM_MODE_OPTION=""
+      if [ -n "$DRM_MODE" ]; then
+      	DRM_MODE_OPTION="--generate-drm-mode $DRM_MODE"
+      fi
+
+      ADAPTIVE_SYNC_OPTION=""
+      if [ -n "$ADAPTIVE_SYNC" ]; then
+      	ADAPTIVE_SYNC_OPTION="--adaptive-sync"
+      fi
+
+      PANEL_TYPE_OPTION=""
+      if [ -n "$PANEL_TYPE" ] && gamescope_has_option "--force-panel-type"; then
+      	PANEL_TYPE_OPTION="--force-panel-type $PANEL_TYPE"
+      fi
+
+      CUSTOM_REFRESH_RATES_OPTION=""
+      if [ -n "$CUSTOM_REFRESH_RATES" ] && gamescope_has_option "--custom-refresh-rates"; then
+      	CUSTOM_REFRESH_RATES_OPTION="--custom-refresh-rates $CUSTOM_REFRESH_RATES"
+      fi
+
+      GAMESCOPECMD="gamescope \
+        ${lib.escapeShellArgs cfg.gamescopeSession.args} \
+      	$ORIENTATION_OPTION \
+      	$DRM_MODE_OPTION \
+      	$ADAPTIVE_SYNC_OPTION \
+      	$PANEL_TYPE_OPTION \
+      	$CUSTOM_REFRESH_RATES_OPTION \
+      	$BACKEND_OPTION \
+      	$HDR_OPTIONS \
+      	--prefer-output $OUTPUT_CONNECTOR \
+      	--xwayland-count $XWAYLAND_COUNT \
+      	--default-touch-mode $TOUCH_MODE \
+      	--hide-cursor-delay $HIDE_CURSOR_DELAY_MS \
+      	--fade-out-duration $FADE_OUT_DURATION_MS \
+      	--steam"
+
+      # Add socket and stats read
+      GAMESCOPECMD+=" -R $socket -T $stats"
+
+      # Add custom vulkan adapter if specified
+      if [ -n "$VULKAN_ADAPTER" ]; then
+      	GAMESCOPECMD+=" --prefer-vk-device $VULKAN_ADAPTER"
+      fi
+
       # Start gamescope compositor, log it's output and background it
-      echo gamescope ${lib.escapeShellArgs cfg.gamescopeSession.args}  -R $socket -T $stats >"$HOME"/.gamescope-cmd.log
-      gamescope ${lib.escapeShellArgs cfg.gamescopeSession.args} -R $socket -T $stats >"$HOME"/.gamescope-stdout.log 2>&1 &
+      echo "$GAMESCOPECMD" >"$HOME"/.gamescope-cmd.log
+      $GAMESCOPECMD >"$HOME"/.gamescope-stdout.log 2>&1 &
       gamescope_pid="$!"
 
       if read -r -t 3 response_x_display response_wl_display <>"$socket"; then
@@ -80,14 +304,6 @@ let
         wait -n "$gamescope_pid"
         exit 1
         # Systemd or Session manager will have to restart session
-      fi
-
-      # If we have mangoapp binary start it
-      if command -v mangoapp >/dev/null; then
-        (while true; do
-          sleep 1
-          mangoapp >"$HOME"/.mangoapp-stdout.log 2>&1
-        done) &
       fi
 
       # Start the installer
