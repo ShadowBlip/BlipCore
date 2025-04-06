@@ -5,10 +5,6 @@
   ...
 }:
 
-let
-  # Use pinned gamescope v3.16.2
-  gamescope-v3_16_2 = (import inputs.shadowblip.inputs.nixpkgs-1e5b65 { }).pkgs.gamescope;
-in
 {
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
@@ -189,7 +185,8 @@ in
     ffmpeg-full
     file
     fzf
-    gamescope-v3_16_2
+    # Use pinned gamescope v3.16.2
+    (import inputs.shadowblip.inputs.nixpkgs-1e5b65 { inherit system; }).pkgs.gamescope
     git
     glxinfo
     gnumake
