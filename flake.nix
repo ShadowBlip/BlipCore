@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs-1e5b65.url = "github:nixos/nixpkgs?ref=1e5b653dff12029333a6546c11e108ede13052eb";
+    nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
   };
 
@@ -13,6 +15,7 @@
       nixosModules = rec {
         default = shadowblip;
         shadowblip = ./modules;
+        nixos-hardware = inputs.nixos-hardware.nixosModules;
         nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
       };
 

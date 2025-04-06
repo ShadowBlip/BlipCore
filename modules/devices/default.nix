@@ -4,5 +4,6 @@
 {
   imports = [
     ./onexplayer
+    ./asus/ally/rc71l
   ];
 }

@@ -5,6 +5,10 @@
   ...
 }:
 
+let
+  # Use pinned gamescope v3.16.2
+  gamescope-v3_16_2 = (import inputs.shadowblip.inputs.nixpkgs-1e5b65 { }).pkgs.gamescope;
+in
 {
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
@@ -25,6 +29,12 @@
   networking.networkmanager.enable = lib.mkDefault true;
   services.avahi.enable = lib.mkDefault true;
   services.avahi.nssmdns4 = lib.mkDefault true;
+
+  # Automatic Timezone
+  services.automatic-timezoned.enable = lib.mkDefault true;
+
+  # SSD
+  services.fstrim.enable = lib.mkDefault true;
 
   # Select internationalisation properties.
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
@@ -179,7 +189,7 @@
     ffmpeg-full
     file
     fzf
-    gamescope
+    gamescope-v3_16_2
     git
     glxinfo
     gnumake
