@@ -195,6 +195,7 @@
     jq
     legendary-gl
     legendary-heroic
+    lnav
     mangohud
     moonlight-qt
     nixos-facter
