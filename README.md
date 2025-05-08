@@ -90,6 +90,19 @@ make test
 This command will create a `result` symlink in the current directory with
 the built OS configuration.
 
+You can also simulate building the flake for a specific device by setting the
+`DEVICE` variable and passing it the name of the device found in `./test/devices`:
+
+```bash
+make test DEVICE=oxp-mini
+```
+
+You can build the flake for _all_ supported images with:
+
+```bash
+make test-all
+```
+
 ## Remote Updating
 
 You can build this flake locally and push it to a remote device with:

@@ -3,7 +3,8 @@
 # hardware.devices
 {
   imports = [
+    ./asus
+    ./ayaneo
     ./onexplayer
-    ./asus/ally/rc71l
   ];
 }

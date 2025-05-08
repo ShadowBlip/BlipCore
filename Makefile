@@ -2,6 +2,8 @@ SSH_USER ?= gamer
 SSH_HOST ?= 192.168.0.100
 DEPLOY_DIR := /tmp/deploy-$(SSH_HOST)
 
+SUPPORTED_DEVICES := $(shell find ./test/devices -type f -printf '%f\n' | cut -d'.' -f1)
+
 -include settings.mk
 
 ##@ General
@@ -26,11 +28,22 @@ help: ## Display this help.
 test: ## Build a test build of the flake OS configuration
 	@rm -rf /tmp/test-flake
 	@mkdir -p /tmp/test-flake
-	cp ./test/*.nix /tmp/test-flake
-	cp ./test/*.json /tmp/test-flake
-	sed -i 's|shadowblip.url = "path:.."|shadowblip.url = "$(PWD)"|g' /tmp/test-flake/flake.nix
+	@cp ./test/*.nix /tmp/test-flake
+ifndef DEVICE
+	@cp ./test/*.json /tmp/test-flake
+else
+	@echo "Building OS flake for device: $(DEVICE)"
+	@cp ./test/devices/$(DEVICE).json /tmp/test-flake/facter.json
+endif
+	@sed -i 's|shadowblip.url = "path:.."|shadowblip.url = "$(PWD)"|g' /tmp/test-flake/flake.nix
 	nixos-rebuild build --impure --flake /tmp/test-flake/#nixos
 
+.PHONY: test-all
+test-all: ## Build a test build of the flake OS configuration for all supported devices
+	@for device in $(SUPPORTED_DEVICES); do \
+		rm -f result; \
+		$(MAKE) test DEVICE=$$device; \
+	done
 
 .PHONY: deploy
 deploy: ## Build and deploy the flake to a remote host
