@@ -66,6 +66,16 @@ iso: ## Build an ISO installer image
 		build --impure .#nixosConfigurations.iso.config.system.build.isoImage
 
 
+.PHONY: iso-publish
+iso-publish: iso ## Build and publish the ISO installer image
+	curl --location --header "PRIVATE-TOKEN: $(GITLAB_TOKEN)" \
+		--output /tmp/iso-upload.txt \
+		--request PUT \
+		--progress-bar \
+		--upload-file ./result/iso/*.iso \
+		"https://gitlab.com/api/v4/projects/shadowapex%2Fos-flake/packages/generic/installer/1.0.0/installer.iso"
+
+
 .PHONY: clean
 clean:
 	rm -rf result
