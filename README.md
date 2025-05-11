@@ -2,9 +2,20 @@
 
 This flake will configure your system to boot directly into OpenGamepadUI.
 
-## Requirements
+## Installation
 
-Currently this flake requires NixOS to already be installed and the "flakes"
+### From the installer ISO
+
+An installer ISO is available that will install NixOS and configure the OS
+to use this git repository as its default configuration source:
+
+[Download](https://gitlab.com/shadowapex/os-flake/-/packages/38791510)
+
+**NOTE: This is still very alpha level, and will wipe the entire disk**
+
+### From an existing NixOS installation
+
+Alternatively, this flake can be used with an existing NixOS installation with the "flakes"
 feature enabled.
 
 To enable flakes on your system, add the following to your `/etc/nixos/configuration.nix`:
@@ -24,8 +35,6 @@ Then generate a hardware report with `nixos-facter`:
 ```bash
 nix-shell -p nixos-facter --run "sudo nixos-facter -o /etc/nixos/facter.json"
 ```
-
-## Usage
 
 Add the following to: `/etc/nixos/flake.nix`:
 
@@ -61,7 +70,7 @@ Add the following to: `/etc/nixos/flake.nix`:
 
 Then enable it with:
 
-```
+```bash
 sudo nixos-rebuild switch
 ```
 
@@ -69,9 +78,15 @@ sudo nixos-rebuild switch
 
 To update, run:
 
-```
+```bash
 cd /etc/nixos/
 sudo nix flake update
+```
+
+Then use `nixos-rebuild` to apply the latest updates:
+
+```bash
+sudo nixos-rebuild switch
 ```
 
 ## Customization
@@ -109,4 +124,12 @@ You can build this flake locally and push it to a remote device with:
 
 ```bash
 make deploy SSH_HOST=x.x.x.x
+```
+
+## Building the installer ISO
+
+You can build the installer ISO image using the `Makefile`:
+
+```bash
+make iso
 ```
