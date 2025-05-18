@@ -23,6 +23,7 @@ let
       echo "  update            Update the flake.lock file with the latest inputs"
       echo "  upgrade           Run 'nixos-rebuild switch'"
       echo "  has-update        Prints '0' if no updates are available"
+      echo "  list-branches     List available branches from upstream"
       echo "  set-branch <name> Set the upstream branch to fetch updates from"
       echo "  list-generations  List rollback generations in JSON format"
       echo "  gc                Purge rollback generations"
@@ -47,6 +48,10 @@ let
       echo $?
       rm -f /tmp/flake.lock
       set -e
+    }
+
+    list_branches() {
+      git ls-remote --heads https://gitlab.com/shadowapex/os-flake.git | awk '{print $2}' | sed 's|refs/heads/||g'
     }
 
     set_branch() {
@@ -103,6 +108,9 @@ let
           exit 1
         fi
         set_branch "$2"
+        ;;
+      "list-branches")
+        list_branches
         ;;
       *) # Invalid command
         echo "Error: Invalid command"
