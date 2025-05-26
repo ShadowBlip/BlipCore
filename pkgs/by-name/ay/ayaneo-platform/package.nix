@@ -13,8 +13,8 @@ stdenv.mkDerivation (finalAttr: {
   src = fetchFromGitHub {
     owner = "shadowblip";
     repo = finalAttr.pname;
-    rev = "750b6754b1e241dac68deaabdb2683e3cc4e1dd1";
-    hash = "sha256-J6jcXKQxLENEt1YykcwO4pdT+srGIkAAbdKl16xUklM=";
+    rev = "8ccdf707e7dd7a7c97307b078122b80e92a4ca62";
+    hash = "sha256-rBBwwsInA+0zqktVLsxP+sYCF624y6KTWYOxWVgXhgg=";
   };
 
   hardeningDisable = [ "pic" ];
