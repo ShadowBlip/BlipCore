@@ -83,10 +83,18 @@ clean:
 
 
 .PHONY: cachix
-cachix: test ## Build flake and push to binary cache
+cachix: ## Build flake and push to binary cache
 	nix flake archive --json \
     | jq -r '.path,(.inputs|to_entries[].value.path)' \
     | cachix push shadowblip
+	@for device in $(SUPPORTED_DEVICES); do \
+		rm -f result; \
+		$(MAKE) test DEVICE=$$device cachix-push; \
+	done
+
+
+.PHONY: cachix-push
+cachix-push:
 	cachix push shadowblip ./result
 
 
