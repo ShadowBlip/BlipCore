@@ -67,17 +67,19 @@
     options = lib.mkDefault "--delete-older-than 14d";
   };
 
+  # Add ShadowBlip cache
+  nix.extraOptions = ''
+    extra-substituters = https://shadowblip.cachix.org
+    extra-trusted-public-keys = shadowblip.cachix.org-1:0Sdy0PePLXHFB7KFRfeycqJBGNdRNTLOmj7YY2UqebU=
+  '';
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = lib.mkDefault true;
 
   # Allow executing unpackaged binaries
   services.envfs.enable = lib.mkDefault true;
   programs.nix-ld.enable = lib.mkDefault true;
-  programs.nix-ld.libraries = lib.mkDefault [
-    pkgs.libiio
-    pkgs.libevdev
-    pkgs.udev
-  ];
+  programs.nix-ld.libraries = pkgs.steam-run.args.multiPkgs pkgs;
 
   # Configure keymap in X11
   services.xserver.xkb = lib.mkDefault {
@@ -268,10 +270,6 @@
     inputplumber.enable = lib.mkDefault true;
     powerstation.enable = lib.mkDefault true;
     gamescopeSession.enable = lib.mkDefault true;
-    gamescopeSession.env = {
-      DBUS_FATAL_WARNINGS = "0";
-      LOG_LEVEL = "debug";
-    };
   };
 
   # Steam

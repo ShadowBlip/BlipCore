@@ -82,6 +82,14 @@ clean:
 	sudo nix-collect-garbage
 
 
+.PHONY: cachix
+cachix: test
+	nix flake archive --json \
+    | jq -r '.path,(.inputs|to_entries[].value.path)' \
+    | cachix push shadowblip
+	cachix push shadowblip ./result
+
+
 .PHONY: in-docker
 in-docker:
 	docker run -it \
