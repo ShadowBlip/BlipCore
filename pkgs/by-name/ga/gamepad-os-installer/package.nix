@@ -6,7 +6,7 @@
   fetchFromGitHub,
   gamescope,
   godot_4,
-  godot_4-export-templates,
+  godot_4-export-templates-bin,
   hwdata,
   lib,
   libGL,
@@ -48,7 +48,7 @@ stdenv.mkDerivation (finalAttrs: {
     autoPatchelfHook
     cargo
     godot_4
-    godot_4-export-templates
+    godot_4-export-templates-bin
     pkg-config
     rustPlatform.cargoSetupHook
   ];
@@ -83,7 +83,7 @@ stdenv.mkDerivation (finalAttrs: {
       GODOT = lib.getExe godot_4;
       GODOT_VERSION = lib.elemAt versionAndRelease 0;
       GODOT_RELEASE = lib.elemAt versionAndRelease 1;
-      EXPORT_TEMPLATE = "${godot_4-export-templates}";
+      EXPORT_TEMPLATE = "${godot_4-export-templates-bin}";
       BUILD_TYPE = "${finalAttrs.buildType}";
     };
 
@@ -95,7 +95,7 @@ stdenv.mkDerivation (finalAttrs: {
     # Godot looks for export templates in HOME
     export HOME=$(mktemp -d)
     mkdir -p $HOME/.local/share/godot/export_templates
-    ln -s "${godot_4-export-templates}" "$HOME/.local/share/godot/export_templates/$GODOT_VERSION.$GODOT_RELEASE"
+    ln -s "${godot_4-export-templates-bin}" "$HOME/.local/share/godot/export_templates/$GODOT_VERSION.$GODOT_RELEASE"
   '';
 
   postInstall = ''

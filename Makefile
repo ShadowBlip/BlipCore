@@ -3,6 +3,8 @@ SSH_HOST ?= 192.168.0.100
 DEPLOY_DIR := /tmp/deploy-$(SSH_HOST)
 
 SUPPORTED_DEVICES := $(shell find ./test/devices -type f -printf '%f\n' | cut -d'.' -f1)
+CACHE_NAME ?= shadowblip
+PKGS := .\#gamepad-os-installer
 
 -include settings.mk
 
@@ -84,9 +86,14 @@ clean:
 
 .PHONY: cachix
 cachix: ## Build flake and push to binary cache
+	@echo "Pushing flake inputs to cache..."
 	nix flake archive --json \
     | jq -r '.path,(.inputs|to_entries[].value.path)' \
-    | cachix push shadowblip
+    | cachix push $(CACHE_NAME)
+	@echo "Pushing packages to cache..."
+	nix build --no-link --print-out-paths $(PKGS) \
+    | cachix push $(CACHE_NAME)
+	@echo "Pushing OS build to cache..."
 	@for device in $(SUPPORTED_DEVICES); do \
 		rm -f result; \
 		$(MAKE) test DEVICE=$$device cachix-push; \
@@ -95,7 +102,7 @@ cachix: ## Build flake and push to binary cache
 
 .PHONY: cachix-push
 cachix-push:
-	cachix push shadowblip ./result
+	cachix push $(CACHE_NAME) ./result
 
 
 .PHONY: in-docker

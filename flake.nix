@@ -10,6 +10,10 @@
 
   outputs =
     inputs@{ nixpkgs, ... }:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+    in
     {
 
       nixosModules = rec {
@@ -17,6 +21,10 @@
         shadowblip = ./modules;
         nixos-hardware = inputs.nixos-hardware.nixosModules;
         nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
+      };
+
+      packages."x86_64-linux" = {
+        gamepad-os-installer = pkgs.callPackage ./pkgs/by-name/ga/gamepad-os-installer/package.nix { };
       };
 
       nixosConfigurations = {
@@ -28,6 +36,12 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
             ./modules/installer/cd-dvd/installation-cd.nix
             ./modules/installer/cd-dvd/gamepad-os-installer.nix
+            {
+              nix.extraOptions = ''
+                extra-substituters = https://shadowblip.cachix.org
+                extra-trusted-public-keys = shadowblip.cachix.org-1:0Sdy0PePLXHFB7KFRfeycqJBGNdRNTLOmj7YY2UqebU=
+              '';
+            }
           ];
         };
       };
