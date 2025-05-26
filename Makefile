@@ -83,7 +83,7 @@ clean:
 
 
 .PHONY: cachix
-cachix: test
+cachix: test ## Build flake and push to binary cache
 	nix flake archive --json \
     | jq -r '.path,(.inputs|to_entries[].value.path)' \
     | cachix push shadowblip
