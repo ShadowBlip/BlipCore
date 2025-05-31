@@ -27,7 +27,8 @@
   services.avahi.nssmdns4 = lib.mkDefault true;
 
   # Automatic Timezone
-  services.automatic-timezoned.enable = lib.mkDefault true;
+  #services.automatic-timezoned.enable = lib.mkDefault true;
+  services.tzupdate.enable = lib.mkDefault true;
 
   # SSD
   services.fstrim.enable = lib.mkDefault true;
@@ -194,6 +195,7 @@
     gnumake
     hid-tools
     hwdata
+    inxi
     jq
     legendary-gl
     legendary-heroic
