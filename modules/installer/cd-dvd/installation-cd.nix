@@ -6,7 +6,17 @@
   isoImage.grubTheme = pkgs.minimal-grub-theme;
 
   # Kernel
-  boot.kernelPackages = pkgs.lib.mkDefault pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.supportedFilesystems = pkgs.lib.mkForce [
+    "btrfs"
+    "cifs"
+    "f2fs"
+    "jfs"
+    "ntfs"
+    "reiserfs"
+    "vfat"
+    "xfs"
+  ];
 
   # Plymouth
   boot.consoleLogLevel = 0;
