@@ -14,6 +14,9 @@ let
       exec pkexec --disable-internal-agent "$0" "$@"
     fi
 
+    FLAKE_SRC=''${FLAKE_SRC:-"gitlab:shadowapex/os-flake"}
+    FLAKE_GIT=''${FLAKE_GIT:-"https://gitlab.com/shadowapex/os-flake.git"}
+
     help() {
       echo "Updater for a NixOS-based system using flakes"
       echo
@@ -23,6 +26,7 @@ let
       echo "  update            Update the flake.lock file with the latest inputs"
       echo "  upgrade           Run 'nixos-rebuild switch'"
       echo "  has-update        Prints '0' if no updates are available"
+      echo "  branch            Prints the currently selected branch"
       echo "  list-branches     List available branches from upstream"
       echo "  set-branch <name> Set the upstream branch to fetch updates from"
       echo "  list-generations  List rollback generations in JSON format"
@@ -51,12 +55,16 @@ let
     }
 
     list_branches() {
-      git ls-remote --heads https://gitlab.com/shadowapex/os-flake.git | awk '{print $2}' | sed 's|refs/heads/||g'
+      git ls-remote --heads "$FLAKE_GIT" | awk '{print $2}' | sed 's|refs/heads/||g'
+    }
+
+    get_branch() {
+      grep "$FLAKE_SRC" /etc/nixos/flake.nix | cut -d'"' -f2 | cut -d'=' -f2
     }
 
     set_branch() {
       echo "Setting branch to: $1"
-      sed -i "s|gitlab:shadowapex/os-flake?ref=.*\"|gitlab:shadowapex/os-flake?ref=$1\"|g" /etc/nixos/flake.nix
+      sed -i "s|$FLAKE_SRC?ref=.*\"|$FLAKE_SRC?ref=$1\"|g" /etc/nixos/flake.nix
     }
 
     garbage_collect() {
@@ -101,6 +109,9 @@ let
         ;;
       "has-update")
         check_for_update
+        ;;
+      "branch")
+        get_branch
         ;;
       "set-branch")
         if [[ "$2" == "" ]]; then
