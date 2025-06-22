@@ -17,6 +17,14 @@ let
     pkgs.writeShellScriptBin "gamepad-os-installer-gamescope" ''
       ${builtins.concatStringsSep "\n" exports}
 
+      gamescope_has_option() {
+      	if (gamescope --help 2>&1 | grep -e "$1" > /dev/null); then
+      		return 0
+      	fi
+
+      	return 1
+      }
+
       # Device quirks from ChimeraOS gamescope-session-plus
       # https://github.com/ChimeraOS/gamescope-session/blob/main/usr/share/gamescope-session-plus/device-quirks
       SYS_ID="$(cat /sys/devices/virtual/dmi/id/product_name)"
@@ -273,13 +281,7 @@ let
       	$PANEL_TYPE_OPTION \
       	$CUSTOM_REFRESH_RATES_OPTION \
       	$BACKEND_OPTION \
-      	$HDR_OPTIONS \
-      	--prefer-output $OUTPUT_CONNECTOR \
-      	--xwayland-count $XWAYLAND_COUNT \
-      	--default-touch-mode $TOUCH_MODE \
-      	--hide-cursor-delay $HIDE_CURSOR_DELAY_MS \
-      	--fade-out-duration $FADE_OUT_DURATION_MS \
-      	--steam"
+      	$HDR_OPTIONS"
 
       # Add socket and stats read
       GAMESCOPECMD+=" -R $socket -T $stats"
