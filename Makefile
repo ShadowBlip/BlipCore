@@ -60,6 +60,11 @@ deploy: ## Build and deploy the flake to a remote host
 	nixos-rebuild --target-host $(SSH_USER)@$(SSH_HOST) --use-remote-sudo --impure --flake $(DEPLOY_DIR)/#nixos switch
 
 
+.PHONY: update
+update: ## Update flake inputs
+	nix flake update
+
+
 .PHONY: iso
 iso: ## Build an ISO installer image
 	nix \
