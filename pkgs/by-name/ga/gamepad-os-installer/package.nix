@@ -24,9 +24,9 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "ShadowBlip";
     repo = "gamepad-os-installer";
-    rev = "a5e776c902828fb673ad84eb72cd689af61415cb";
+    rev = "cece8109ff040e6a99679fd495f0b955a5b818d8";
     #tag = "v${finalAttrs.version}";
-    hash = "sha256-rOE9daFevp3zgt6EoWhxhRZW2w1cLZZHoq1u4mE377s=";
+    hash = "sha256-qrV0m2Vh1A3WgaoQ2D8jrtxl2Wmk8eYA9KablzzlJzc=";
   };
 
   cargoDeps = rustPlatform.fetchCargoVendor {
