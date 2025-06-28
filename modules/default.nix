@@ -178,6 +178,7 @@
   environment.systemPackages = with pkgs; [
     appimage-run
     bc
+    brightnessctl
     btop-rocm
     bubblewrap
     ccze
