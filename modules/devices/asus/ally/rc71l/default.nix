@@ -1,6 +1,6 @@
 # ASUS ROG Ally RC71L-specific configurations
 #
-# hardware.devices.onexplayer
+# hardware.devices.asus.ally.rc71l
 
 { lib, config, ... }:
 
@@ -13,8 +13,12 @@ let
 in
 
 {
+  imports = [
+    ./boot.nix
+  ];
+
   options = {
-    hardware.devices.rog_ally_rc71l = {
+    hardware.devices.asus.ally.rc71l = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = is_device;

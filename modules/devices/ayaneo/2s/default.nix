@@ -2,7 +2,7 @@
 #
 # hardware.devices.ayaneo.2s
 
-{ lib, ... }:
+{ config, lib, ... }:
 
 let
   products = [
@@ -18,7 +18,7 @@ in
   ];
 
   options = {
-    hardware.devices.ayaneo.2s = {
+    hardware.devices.ayaneo."2s" = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = is_device;

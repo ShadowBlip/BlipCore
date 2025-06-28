@@ -6,12 +6,12 @@
 }:
 
 let
-  cfg = config.hardware.devices.ayaneo."2s";
+  cfg = config.hardware.devices.asus.ally.rc71l;
 in
 {
   config = lib.mkIf cfg.enable {
     boot.kernelParams = options.boot.kernelParams ++ [
-      "fbcon=rotate:1"
+      "amd_pstate=active"
     ];
   };
 }
