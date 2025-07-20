@@ -74,6 +74,26 @@ Then enable it with:
 sudo nixos-rebuild switch
 ```
 
+## Enabling Secure Boot
+
+Secure Boot is supported via [Lanzaboote](https://github.com/nix-community/lanzaboote). You can enable it with the following steps:
+
+1. Boot into your device firmware and configure Secure Boot for "Setup Mode"
+
+```bash
+sudo systemctl reboot --firmware-setup
+```
+
+2. Reboot into the OS to generate and enroll keys:
+
+```bash
+sudo sbctl create-keys
+sudo sbctl enroll-keys --microsoft
+sudo reboot
+```
+
+3. Boot into your device firmware and enable Secure Boot
+
 ## Updates
 
 To update, run:

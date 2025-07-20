@@ -102,6 +102,7 @@
     nixos-facter
     pciutils
     pstree
+    sbctl
     screen
     tree
     unzip

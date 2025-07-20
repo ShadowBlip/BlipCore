@@ -8,6 +8,7 @@
 {
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
+    inputs.shadowblip.nixosModules.lanzaboote
     ./boot
     ./devices
     ./updater
@@ -207,6 +208,7 @@
     pciutils
     pstree
     ryzenadj
+    sbctl
     screen
     tree
     umu-launcher
