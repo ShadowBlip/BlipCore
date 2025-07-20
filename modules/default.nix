@@ -14,6 +14,9 @@
     ./updater
   ];
 
+  # Swap
+  zramSwap.enable = true;
+
   # Networking
   networking.hostName = lib.mkDefault "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
