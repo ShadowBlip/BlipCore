@@ -6,6 +6,10 @@
     nixpkgs-1e5b65.url = "github:nixos/nixpkgs?ref=1e5b653dff12029333a6546c11e108ede13052eb";
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,6 +25,7 @@
         shadowblip = ./modules;
         nixos-hardware = inputs.nixos-hardware.nixosModules;
         nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
+        lanzaboote = inputs.lanzaboote.nixosModules.lanzaboote;
       };
 
       packages."x86_64-linux" = {

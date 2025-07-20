@@ -8,10 +8,14 @@
 {
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
+    inputs.shadowblip.nixosModules.lanzaboote
     ./boot
     ./devices
     ./updater
   ];
+
+  # Swap
+  zramSwap.enable = true;
 
   # Networking
   networking.hostName = lib.mkDefault "nixos"; # Define your hostname.
@@ -207,6 +211,7 @@
     pciutils
     pstree
     ryzenadj
+    sbctl
     screen
     tree
     umu-launcher

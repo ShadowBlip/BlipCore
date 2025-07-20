@@ -7,8 +7,15 @@
 {
   # Bootloader.
   boot.loader.efi.canTouchEfiVariables = lib.mkDefault true;
-  boot.loader.systemd-boot.enable = lib.mkDefault true;
-  boot.loader.systemd-boot.configurationLimit = lib.mkDefault 10;
+
+  # Lanzaboote currently replaces the systemd-boot module.
+  # This setting is usually set to true in configuration.nix
+  # generated at installation time. So we force it to false
+  # for now.
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.lanzaboote.enable = lib.mkDefault true;
+  boot.lanzaboote.pkiBundle = lib.mkDefault "/var/lib/sbctl";
+  boot.lanzaboote.configurationLimit = lib.mkDefault 10;
 
   # Plymouth
   boot.consoleLogLevel = lib.mkDefault 0;
