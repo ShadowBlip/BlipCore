@@ -9,6 +9,7 @@
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
     inputs.shadowblip.nixosModules.lanzaboote
+    inputs.shadowblip.nixosModules.chaotic
     ./boot
     ./devices
     ./updater
@@ -221,6 +222,7 @@
     wget
     xorg.xprop
     xorg.xwininfo
+    xxd
     yq
     zip
   ];

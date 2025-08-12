@@ -10,6 +10,7 @@
       url = "github:nix-community/lanzaboote/v0.4.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   outputs =
@@ -26,6 +27,7 @@
         nixos-hardware = inputs.nixos-hardware.nixosModules;
         nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
         lanzaboote = inputs.lanzaboote.nixosModules.lanzaboote;
+        chaotic = inputs.chaotic.nixosModules.default;
       };
 
       packages."x86_64-linux" = {
