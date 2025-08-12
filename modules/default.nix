@@ -208,6 +208,7 @@
     lnav
     mangohud
     moonlight-qt
+    nh
     nixos-facter
     pciutils
     pstree
