@@ -3,13 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-1e5b65.url = "github:nixos/nixpkgs?ref=1e5b653dff12029333a6546c11e108ede13052eb";
+    nixpkgs-6e9874.url = "github:nixos/nixpkgs?ref=6e987485eb2c77e5dcc5af4e3c70843711ef9251"; # Mesa 25.1.6
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.4.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   outputs =
@@ -26,10 +27,12 @@
         nixos-hardware = inputs.nixos-hardware.nixosModules;
         nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
         lanzaboote = inputs.lanzaboote.nixosModules.lanzaboote;
+        chaotic = inputs.chaotic.nixosModules.default;
       };
 
       packages."x86_64-linux" = {
         gamepad-os-installer = pkgs.callPackage ./pkgs/by-name/ga/gamepad-os-installer/package.nix { };
+        gamescope = pkgs.callPackage ./pkgs/by-name/ga/gamescope/package.nix { };
       };
 
       nixosConfigurations = {

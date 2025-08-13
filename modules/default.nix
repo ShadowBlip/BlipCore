@@ -4,11 +4,18 @@
   inputs,
   ...
 }:
+let
 
+  pkgs-6e9874 = (with pkgs; import inputs.shadowblip.inputs.nixpkgs-6e9874 { inherit system; }).pkgs;
+  mesa_25_1_6 = pkgs-6e9874.mesa;
+  mesa32_25_1_6 = pkgs-6e9874.driversi686Linux.mesa;
+
+in
 {
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
     inputs.shadowblip.nixosModules.lanzaboote
+    inputs.shadowblip.nixosModules.chaotic
     ./boot
     ./devices
     ./updater
@@ -148,9 +155,13 @@
   };
 
   # Graphics
-  hardware.graphics = lib.mkDefault {
+  hardware.graphics = lib.mkForce {
     enable = true;
     enable32Bit = true;
+    # Pin mesa 25.1.6 due to issues with 25.2.0 and gamescope:
+    # https://github.com/ValveSoftware/gamescope/issues/1900
+    package = mesa_25_1_6;
+    package32 = mesa32_25_1_6;
   };
   services.xserver.videoDrivers = lib.mkDefault [ "amdgpu" ];
 
@@ -193,8 +204,11 @@
     ffmpeg-full
     file
     fzf
-    # Use pinned gamescope v3.16.2
-    (import inputs.shadowblip.inputs.nixpkgs-1e5b65 { inherit system; }).pkgs.gamescope
+    # Use gamescope from nixpkgs
+    #gamescope
+    # Use pinned gamescope v3.16.15 from flake outputs
+    # https://github.com/ValveSoftware/gamescope/issues/1900
+    inputs.shadowblip.outputs.packages.${pkgs.system}.gamescope
     git
     glxinfo
     gnumake
@@ -207,6 +221,7 @@
     lnav
     mangohud
     moonlight-qt
+    nh
     nixos-facter
     pciutils
     pstree
@@ -221,6 +236,7 @@
     wget
     xorg.xprop
     xorg.xwininfo
+    xxd
     yq
     zip
   ];
