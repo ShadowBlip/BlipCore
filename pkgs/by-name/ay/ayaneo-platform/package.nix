@@ -2,8 +2,8 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  linuxPackages_latest,
-  kernel ? linuxPackages_latest.kernel,
+  linuxPackages_cachyos,
+  kernel ? linuxPackages_cachyos.kernel,
 }:
 
 stdenv.mkDerivation (finalAttr: {
