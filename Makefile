@@ -4,7 +4,7 @@ DEPLOY_DIR := /tmp/deploy-$(SSH_HOST)
 
 SUPPORTED_DEVICES := $(shell find ./test/devices -type f -printf '%f\n' | cut -d'.' -f1)
 CACHE_NAME ?= shadowblip
-PKGS := .\#gamepad-os-installer
+PKGS := .\#gamepad-os-installer .\#gamescope
 
 -include settings.mk
 
