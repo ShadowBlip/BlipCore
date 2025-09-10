@@ -2,9 +2,15 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  linuxPackages_cachyos,
-  kernel ? linuxPackages_cachyos.kernel,
+  linuxPackages_latest,
+  kernel ? linuxPackages_latest.kernel,
 }:
+
+let
+  # Remove unnecessary build flags
+  noUndefineFlags = lib.lists.remove "--eval=undefine modules" kernel.makeFlags;
+  flags = lib.lists.remove "O=\$\(buildRoot\)" noUndefineFlags;
+in
 
 stdenv.mkDerivation (finalAttr: {
   pname = "ayaneo-platform";
@@ -17,26 +23,33 @@ stdenv.mkDerivation (finalAttr: {
     hash = "sha256-rBBwwsInA+0zqktVLsxP+sYCF624y6KTWYOxWVgXhgg=";
   };
 
+  setSourceRoot = ''
+    export sourceRoot=$(pwd)/source
+  '';
+
   hardeningDisable = [ "pic" ];
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
-  env = {
-    EXTRA_CFLAGS = "-DOXP_PLATFORM_DRIVER_VERSION=${finalAttr.version}";
-    KERNEL_DIR = "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build";
-  };
+  # https://docs.kernel.org/kbuild/modules.html#how-to-build-external-modules
+  makeFlags = flags ++ [
+    "-C"
+    "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
+    "EXTRA_CFLAGS=-DOXP_PLATFORM_DRIVER_VERSION=${finalAttr.version}"
+    "M=${finalAttr.src}"
+    "MO=/tmp"
+  ];
 
-  buildPhase = ''
-    runHook preBuild
-    make -C $KERNEL_DIR M=$(pwd) modules
-    runHook postBuild
-  '';
+  buildFlags = [
+    "modules"
+  ];
 
-  installPhase = ''
-    runHook preInstall
-    install *.ko -Dm444 -t $out/lib/modules/${kernel.modDirVersion}/kernel/drivers/platform/x86
-    runHook postInstall
-  '';
+  # https://docs.kernel.org/kbuild/modules.html#module-installation
+  installFlags = [
+    "INSTALL_MOD_PATH=${placeholder "out"}"
+    "INSTALL_MOD_DIR=kernel/drivers/platform/x86"
+  ];
+  installTargets = [ "modules_install" ];
 
   meta = with lib; {
     homepage = "https://github.com/shadowblip/ayaneo-platform";
