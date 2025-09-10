@@ -31,6 +31,10 @@
       };
 
       packages."x86_64-linux" = {
+        ayaneo-platform = pkgs.callPackage ./pkgs/by-name/ay/ayaneo-platform/package.nix {
+          kernel = pkgs.linuxPackages_latest.kernel;
+          #kernel = inputs.chaotic.legacyPackages.x86_64-linux.linuxPackages_cachyos.kernel;
+        };
         gamepad-os-installer = pkgs.callPackage ./pkgs/by-name/ga/gamepad-os-installer/package.nix { };
         gamescope = pkgs.callPackage ./pkgs/by-name/ga/gamescope/package.nix { };
       };

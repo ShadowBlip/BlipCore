@@ -213,12 +213,12 @@ in
     glxinfo
     gnumake
     gnutar
+    heroic
     hid-tools
     hwdata
     inxi
     jq
     legendary-gl
-    legendary-heroic
     lnav
     mangohud
     moonlight-qt
