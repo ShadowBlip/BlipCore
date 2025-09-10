@@ -212,6 +212,7 @@ in
     git
     glxinfo
     gnumake
+    gnutar
     hid-tools
     hwdata
     inxi
