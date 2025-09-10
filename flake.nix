@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-6e9874.url = "github:nixos/nixpkgs?ref=6e987485eb2c77e5dcc5af4e3c70843711ef9251"; # Mesa 25.1.6
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
     lanzaboote = {
