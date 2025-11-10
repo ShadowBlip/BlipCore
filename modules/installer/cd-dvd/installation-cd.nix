@@ -93,12 +93,12 @@
     fzf
     gamescope
     git
-    glxinfo
     gnumake
     hid-tools
     hwdata
     jq
     mangohud
+    mesa-demos
     nixos-facter
     pciutils
     pstree

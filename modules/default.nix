@@ -199,7 +199,6 @@
     # https://github.com/ValveSoftware/gamescope/issues/1900
     inputs.shadowblip.outputs.packages.${pkgs.system}.gamescope
     git
-    glxinfo
     gnumake
     gnutar
     heroic
@@ -210,6 +209,7 @@
     legendary-gl
     lnav
     mangohud
+    mesa-demos
     moonlight-qt
     nh
     nixos-facter

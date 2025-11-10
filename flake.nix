@@ -6,7 +6,7 @@
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.2";
+      url = "github:nix-community/lanzaboote/v0.4.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
