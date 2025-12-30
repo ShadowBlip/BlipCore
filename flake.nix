@@ -10,10 +10,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ nixpkgs, rust-overlay, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
@@ -54,6 +55,15 @@
               '';
             }
           ];
+        };
+      };
+
+      devShells."x86_64-linux" = {
+        # OpenGamepadUI Development Environment
+        opengamepadui = import ./shells/opengamepadui.nix {
+          system = "x86_64-linux";
+          nixpkgs = nixpkgs;
+          rust-overlay = rust-overlay;
         };
       };
 
