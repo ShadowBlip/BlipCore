@@ -43,7 +43,7 @@ Add the following to: `/etc/nixos/flake.nix`:
   description = "A very basic flake";
 
   inputs = {
-    shadowblip.url = "gitlab:shadowapex/os-flake?ref=main";
+    shadowblip.url = "github:shadowblip/blipcore?ref=main";
   };
 
   outputs =

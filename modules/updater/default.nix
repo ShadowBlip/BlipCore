@@ -14,8 +14,8 @@ let
       exec pkexec --disable-internal-agent "$0" "$@"
     fi
 
-    FLAKE_SRC=''${FLAKE_SRC:-"gitlab:shadowapex/os-flake"}
-    FLAKE_GIT=''${FLAKE_GIT:-"https://gitlab.com/shadowapex/os-flake.git"}
+    FLAKE_SRC=''${FLAKE_SRC:-"github:shadowblip/BlipCore"}
+    FLAKE_GIT=''${FLAKE_GIT:-"https://github.com/shadowblip/blipcore.git"}
 
     help() {
       echo "Updater for a NixOS-based system using flakes"
