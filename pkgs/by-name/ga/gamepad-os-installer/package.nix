@@ -2,7 +2,7 @@
   cargo,
   fetchFromGitHub,
   gamescope,
-  godot_4_4,
+  godot_4_5,
   hwdata,
   lib,
   mesa-demos,
@@ -24,9 +24,9 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "ShadowBlip";
     repo = "gamepad-os-installer";
-    rev = "52bce63322ebb462282b6140baae4be2f7100079";
+    rev = "fb0ca982af68d00bf2f88c5c833e90637e856d4d";
     #tag = "v${finalAttrs.version}";
-    hash = "sha256-+Az324gFUi6Alx17x9741F6puM+ULk1nH/eEOK4mqEg=";
+    hash = "sha256-EWcHPfmO7iQFmbg+QrFjLwQ4jNsUpmIHz+GmjtZyma8=";
   };
 
   cargoDeps = rustPlatform.fetchCargoVendor {
@@ -38,7 +38,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     cargo
-    godot_4_4
+    godot_4_5
     pkg-config
     rustPlatform.cargoSetupHook
   ];
@@ -47,13 +47,13 @@ stdenv.mkDerivation (finalAttrs: {
 
   env =
     let
-      versionAndRelease = lib.splitString "-" godot_4_4.version;
+      versionAndRelease = lib.splitString "-" godot_4_5.version;
     in
     {
-      GODOT = lib.getExe godot_4_4;
+      GODOT = lib.getExe godot_4_5;
       GODOT_VERSION = lib.elemAt versionAndRelease 0;
       GODOT_RELEASE = lib.elemAt versionAndRelease 1;
-      EXPORT_TEMPLATE = "${godot_4_4.export-template}/share/godot/export_templates";
+      EXPORT_TEMPLATE = "${godot_4_5.export-template}/share/godot/export_templates";
       BUILD_TYPE = "${finalAttrs.buildType}";
     };
 
