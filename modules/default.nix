@@ -8,7 +8,6 @@
   imports = [
     inputs.shadowblip.nixosModules.nixos-facter
     inputs.shadowblip.nixosModules.lanzaboote
-    inputs.shadowblip.nixosModules.chaotic
     ./boot
     ./devices
     ./updater

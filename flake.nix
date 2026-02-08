@@ -9,7 +9,6 @@
       url = "github:nix-community/lanzaboote/v0.4.3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
@@ -27,13 +26,11 @@
         nixos-hardware = inputs.nixos-hardware.nixosModules;
         nixos-facter = inputs.nixos-facter-modules.nixosModules.facter;
         lanzaboote = inputs.lanzaboote.nixosModules.lanzaboote;
-        chaotic = inputs.chaotic.nixosModules.default;
       };
 
       packages."x86_64-linux" = {
         ayaneo-platform = pkgs.callPackage ./pkgs/by-name/ay/ayaneo-platform/package.nix {
           kernel = pkgs.linuxPackages_latest.kernel;
-          #kernel = inputs.chaotic.legacyPackages.x86_64-linux.linuxPackages_cachyos.kernel;
         };
         gamepad-os-installer = pkgs.callPackage ./pkgs/by-name/ga/gamepad-os-installer/package.nix { };
         gamescope = pkgs.callPackage ./pkgs/by-name/ga/gamescope/package.nix { };

@@ -33,7 +33,7 @@
   };
 
   # Kernel
-  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_cachyos;
+  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
   boot.kernelParams = lib.mkOverride 100 [
     "audit=0"
     "boot.shell_on_fail"

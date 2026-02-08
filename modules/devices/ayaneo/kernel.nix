@@ -14,7 +14,7 @@ in
     boot.extraModulePackages = [
       (pkgs.callPackage ../../../pkgs/by-name/ay/ayaneo-platform/package.nix {
         stdenv = pkgs.clangStdenv;
-        kernel = pkgs.linuxPackages_cachyos.kernel;
+        kernel = pkgs.linuxPackages_latest.kernel;
       })
     ];
   };
