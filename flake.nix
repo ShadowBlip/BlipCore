@@ -2,7 +2,7 @@
   description = "OS Flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable-small";
     nixos-hardware.url = "github:nixos/nixos-hardware";
     nixos-facter-modules.url = "github:nix-community/nixos-facter-modules";
     lanzaboote = {
@@ -40,6 +40,7 @@
       nixosConfigurations = {
         # Reference: https://haseebmajid.dev/posts/2024-02-04-how-to-create-a-custom-nixos-iso/
         iso = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
           modules = [
             # https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/installer/cd-dvd
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"

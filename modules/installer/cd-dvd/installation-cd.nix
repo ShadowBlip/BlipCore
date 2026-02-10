@@ -7,7 +7,7 @@
 
   # Enable kernel overlay
   nixpkgs.overlays = [
-    inputs.shadowblip.inputs.nix-cachyos-kernel.overlays.pinned
+    inputs.nix-cachyos-kernel.overlays.pinned
   ];
 
   # Kernel
