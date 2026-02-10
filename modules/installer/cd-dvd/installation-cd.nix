@@ -1,12 +1,17 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/installer/cd-dvd/iso-image.nix
   isoImage.edition = "gamescope";
   isoImage.grubTheme = pkgs.minimal-grub-theme;
 
+  # Enable kernel overlay
+  nixpkgs.overlays = [
+    inputs.shadowblip.inputs.nix-cachyos-kernel.overlays.pinned
+  ];
+
   # Kernel
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-deckify;
   boot.supportedFilesystems = pkgs.lib.mkForce [
     "btrfs"
     "cifs"
@@ -109,8 +114,8 @@
     usbutils
     vulkan-tools
     wget
-    xorg.xprop
-    xorg.xwininfo
+    xprop
+    xwininfo
     yq
     zip
   ];

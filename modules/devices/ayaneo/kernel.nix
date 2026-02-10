@@ -2,11 +2,13 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
 let
   cfg = config.hardware.devices.ayaneo;
+  nix-cachyos-kernel = inputs.shadowblip.inputs.nix-cachyos-kernel;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -14,7 +16,7 @@ in
     boot.extraModulePackages = [
       (pkgs.callPackage ../../../pkgs/by-name/ay/ayaneo-platform/package.nix {
         stdenv = pkgs.clangStdenv;
-        kernel = pkgs.linuxPackages_latest.kernel;
+        kernel = nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-deckify;
       })
     ];
   };

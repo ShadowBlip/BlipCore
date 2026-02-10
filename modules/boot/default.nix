@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  inputs,
   ...
 }:
 
@@ -32,8 +33,13 @@
     ];
   };
 
+  # Enable kernel overlay
+  nixpkgs.overlays = [
+    inputs.shadowblip.inputs.nix-cachyos-kernel.overlays.pinned
+  ];
+
   # Kernel
-  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
+  boot.kernelPackages = lib.mkDefault pkgs.cachyosKernels.linuxPackages-cachyos-deckify;
   boot.kernelParams = lib.mkOverride 100 [
     "audit=0"
     "boot.shell_on_fail"

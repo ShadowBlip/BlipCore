@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     rust-overlay.url = "github:oxalica/rust-overlay";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 
   outputs =
@@ -30,7 +31,7 @@
 
       packages."x86_64-linux" = {
         ayaneo-platform = pkgs.callPackage ./pkgs/by-name/ay/ayaneo-platform/package.nix {
-          kernel = pkgs.linuxPackages_latest.kernel;
+          kernel = inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-deckify;
         };
         gamepad-os-installer = pkgs.callPackage ./pkgs/by-name/ga/gamepad-os-installer/package.nix { };
         gamescope = pkgs.callPackage ./pkgs/by-name/ga/gamescope/package.nix { };
