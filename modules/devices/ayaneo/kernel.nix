@@ -16,7 +16,7 @@ in
     boot.extraModulePackages = [
       (pkgs.callPackage ../../../pkgs/by-name/ay/ayaneo-platform/package.nix {
         stdenv = pkgs.clangStdenv;
-        kernel = nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-deckify;
+        kernel = nix-cachyos-kernel.legacyPackages.x86_64-linux.linux-cachyos-deckify;
       })
     ];
   };

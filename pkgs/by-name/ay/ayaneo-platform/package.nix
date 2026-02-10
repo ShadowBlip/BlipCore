@@ -14,13 +14,13 @@ in
 
 stdenv.mkDerivation (finalAttr: {
   pname = "ayaneo-platform";
-  version = "0.3.4";
+  version = "0.3.5";
 
   src = fetchFromGitHub {
     owner = "shadowblip";
     repo = finalAttr.pname;
-    rev = "8ccdf707e7dd7a7c97307b078122b80e92a4ca62";
-    hash = "sha256-rBBwwsInA+0zqktVLsxP+sYCF624y6KTWYOxWVgXhgg=";
+    rev = "eb849d5deabe70fde004f67349fa281af322a499";
+    hash = "sha256-bDJGITkqzgf0vB/R/tovmCggPlc7Lrh/jpCMYD1JQu4=";
   };
 
   setSourceRoot = ''
