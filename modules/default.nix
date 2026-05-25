@@ -193,10 +193,10 @@
     file
     fzf
     # Use gamescope from nixpkgs-unstable
-    #gamescope
+    gamescope
     # Use pinned gamescope v3.16.17 from flake outputs
     # https://github.com/ValveSoftware/gamescope/issues/1900
-    inputs.shadowblip.outputs.packages.${pkgs.stdenv.hostPlatform.system}.gamescope
+    #inputs.shadowblip.outputs.packages.${pkgs.stdenv.hostPlatform.system}.gamescope
     git
     gnumake
     gnutar
