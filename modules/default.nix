@@ -200,7 +200,8 @@
     git
     gnumake
     gnutar
-    heroic
+    # Heroic is using an insecure version of pnpm
+    #heroic
     hid-tools
     hwdata
     inxi
