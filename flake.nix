@@ -22,6 +22,11 @@
       rust-overlay,
       ...
     }:
+
+    let
+      pkgs-x86_64 = nixpkgs.legacyPackages."x86_64-linux";
+      pkgs-aarch64 = nixpkgs.legacyPackages."aarch64-linux";
+    in
     {
 
       nixosModules = rec {
@@ -32,22 +37,27 @@
         lanzaboote = inputs.lanzaboote.nixosModules.lanzaboote;
       };
 
-      packages."x86_64-linux" = with nixpkgs.legacyPackages."x86_64-linux"; {
+      packages."x86_64-linux" = with pkgs-x86_64; {
         ayaneo-platform = callPackage ./pkgs/by-name/ay/ayaneo-platform/package.nix {
           kernel = inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linux-cachyos-deckify;
         };
         gamepad-os-installer = callPackage ./pkgs/by-name/ga/gamepad-os-installer/package.nix { };
         gamescope = callPackage ./pkgs/by-name/ga/gamescope/package.nix { };
-      };
-      packages."aarch64-linux" =
-        with nixpkgs.legacyPackages."x86_64-linux".pkgsCross.aarch64-multiplatform; {
+
+        # For packages that should be cross-compiled
+        pkgsCross.aarch64-multiplatform = with pkgs-x86_64.pkgsCross.aarch64-multiplatform; {
           gamescope = callPackage ./pkgs/by-name/ga/gamescope/package.nix { };
           linux-armada = callPackage ./pkgs/by-name/li/linux-armada/package.nix { };
         };
+      };
+      packages."aarch64-linux" = with pkgs-aarch64; {
+        gamescope = callPackage ./pkgs/by-name/ga/gamescope/package.nix { };
+        linux-armada = callPackage ./pkgs/by-name/li/linux-armada/package.nix { };
+      };
 
       nixosConfigurations = {
         # Reference: https://haseebmajid.dev/posts/2024-02-04-how-to-create-a-custom-nixos-iso/
-        iso = nixpkgs.lib.nixosSystem {
+        iso-x86_64 = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
           modules = [
             # https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/installer/cd-dvd
@@ -64,51 +74,50 @@
           ];
         };
 
-        iso-aarch64 = nixpkgs-staging.legacyPackages.x86_64-linux.pkgsCross.aarch64-multiplatform.nixos {
+        iso-aarch64 = pkgs-aarch64.nixos {
+          imports = [
+            ({ pkgs, ... }: {
+              boot.kernelPackages = pkgs.linuxPackagesFor self.packages."aarch64-linux".linux-armada;
+            })
+
+            # https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/installer/cd-dvd
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+          ];
+        };
+
+        iso-aarch64-cross = pkgs-aarch64.nixos {
           imports = [
             ({ pkgs, ... }: {
               # the platform that performs the build step
-              nixpkgs.localSystem.system = "x86_64-linux";
+              #nixpkgs.localSystem.system = "x86_64-linux";
 
               # the platform that will execute the resulting binaries
               # add this to enable cross-compilation.
-              nixpkgs.crossSystem = {
-                config = "aarch64-unknown-linux-gnu";
-                system = "aarch64-linux";
-              };
-
-              # Tests are not happy for mypy, so use an overlay to disable them.
-              nixpkgs.overlays = [
-                (final: prev: {
-                  pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-                    (python-final: python-prev: {
-                      mypy = python-prev.mypy.overridePythonAttrs (oldAttrs: {
-                        doCheck = false;
-                      });
-                    })
-                  ];
-                })
-                (final: prev: {
-                  openblas = prev.openblas.override {
-                    # Disables assembly kernels that cause missing `.S` files during aarch64 cross-compile
-                    # or you can set to "DYNAMIC_ARCH=1" depending on your target
-                    dynamicArch = false;
-                    target = "ARMV8";
-                  };
-                })
-              ];
-
-              #nixpkgs.config.packageOverrides = pkgs: {
-              #  python3Packages = pkgs.python3Packages.override {
-              #    packageOverrides = pySelf: pySuper: {
-              #      mypy = pySuper.mypy.overrideAttrs (oldAttrs: {
-              #        doCheck = false;
-              #      });
-              #    };
-              #  };
+              #nixpkgs.crossSystem = {
+              #  config = "aarch64-unknown-linux-gnu";
+              #  system = "aarch64-linux";
               #};
 
-              boot.kernelPackages = pkgs.linuxPackagesFor self.packages."aarch64-linux".linux-armada;
+              # Tests are not happy for mypy, so use an overlay to disable them.
+              #nixpkgs.overlays = [
+              #  (final: prev: {
+              #    pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+              #      (python-final: python-prev: {
+              #        mypy = python-prev.mypy.overridePythonAttrs (oldAttrs: {
+              #          doCheck = false;
+              #        });
+              #      })
+              #    ];
+              #  })
+              #  (final: prev: {
+              #    openblas = nixpkgs-staging.legacyPackages."aarch64-linux".openblas;
+              #  })
+              #];
+
+              boot.kernelPackages =
+                pkgs.linuxPackagesFor
+                  self.packages."x86_64-linux".pkgsCross.aarch64-multiplatform.linux-armada;
 
               # NOTE: systemd will fail to build on non-staging branch
               # https://github.com/NixOS/nixpkgs/pull/540766
@@ -130,6 +139,7 @@
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
             "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
           ];
+
         };
 
         sdcard = nixpkgs-staging.legacyPackages.x86_64-linux.pkgsCross.aarch64-multiplatform.nixos {
@@ -239,8 +249,9 @@
       };
 
       images = {
-        iso = self.nixosConfigurations.iso.config.system.build.isoImage;
+        iso-x86_64 = self.nixosConfigurations.iso-x86_64.config.system.build.isoImage;
         iso-aarch64 = self.nixosConfigurations.iso-aarch64.config.system.build.isoImage;
+        iso-aarch64-cross = self.nixosConfigurations.iso-aarch64-cross.config.system.build.isoImage;
         sdcard = self.nixosConfigurations.sdcard.config.system.build.sdImage;
       };
 

@@ -70,7 +70,7 @@ iso: ## Build an ISO installer image
 	nix \
 		--extra-experimental-features nix-command \
 		--extra-experimental-features flakes \
-		build --cores 12 --max-jobs 1 --impure .#images.iso-aarch64
+		build --cores 12 --max-jobs 1 --impure .#images.iso-aarch64-cross
 
 
 .PHONY: iso-publish
