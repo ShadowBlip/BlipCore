@@ -1,0 +1,90 @@
+From: virtudude <virtudude@protonmail.com>
+Subject: armada: sm8650-ayaneo-common: SY7758 upstream-driver wiring + sdhci-caps-mask
+
+--- a/arch/arm64/boot/dts/qcom/sm8650-ayaneo-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8650-ayaneo-common.dtsi
+@@ -121,6 +121,22 @@
+ 		pinctrl-names = "default";
+ 	};
+ 
++	sy7758_vdd33_reg: sy7758-vdd33-regulator {
++		compatible = "regulator-fixed";
++
++		regulator-name = "sy7758_vdd33";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++
++		gpios = <&tlmm 163 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++
++		vin-supply = <&vph_pwr>;
++
++		pinctrl-0 = <&sy7758_vdd33>;
++		pinctrl-names = "default";
++	};
++
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 
+@@ -971,9 +987,7 @@
+ 		regulator-min-microvolt = <5000000>;
+ 		regulator-max-microvolt = <5000000>;
+ 		reset-gpios = <&tlmm 59 GPIO_ACTIVE_HIGH>,
+-					<&tlmm 58 GPIO_ACTIVE_HIGH>,
+-					<&tlmm 163 GPIO_ACTIVE_HIGH>,
+-					<&tlmm 164 GPIO_ACTIVE_HIGH>;
++					<&tlmm 58 GPIO_ACTIVE_HIGH>;
+ 		status = "okay";
+ 	};
+ 
+@@ -981,6 +995,13 @@
+ 	sy7758_bl: sy7758@2e {
+ 		reg = <0x2e>;
+ 		compatible = "silergy,sy7758";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&sy7758_default>;
++
++		vdd-supply = <&sy7758_vdd33_reg>;
++		enable-gpios = <&tlmm 164 GPIO_ACTIVE_HIGH>;
++
+ 		status = "okay";
+ 	};
+ };
+@@ -1248,7 +1269,6 @@
+ 	bus-width = <4>;
+ 	no-sdio;
+ 	no-mmc;
+-	sdhci-caps-mask = <0x3 0x0>;
+ 
+ 	pinctrl-0 = <&sdc2_default>, <&sdc2_card_det_n>;
+ 	pinctrl-1 = <&sdc2_sleep>, <&sdc2_card_det_n>;
+@@ -1389,13 +1409,27 @@
+ 	};
+ 
+ 	panel_pwr_active: panel-pwr-active-state {
+-		pins = "gpio58", "gpio59", "gpio164", "gpio163";
++		pins = "gpio58", "gpio59";
+ 		function = "gpio";
+ 		drive-strength = <8>;
+ 		bias-pull-up;
+ 		output-high;
+ 	};
+ 
++	sy7758_default: sy7758-default-state {
++		pins = "gpio164";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	sy7758_vdd33: sy7758-vdd33-state {
++		pins = "gpio163";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	disp0_reset_n_active: disp0-reset-n-active-state {
+ 		pins = "gpio133";
+ 		function = "gpio";

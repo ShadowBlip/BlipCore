@@ -70,7 +70,7 @@ iso: ## Build an ISO installer image
 	nix \
 		--extra-experimental-features nix-command \
 		--extra-experimental-features flakes \
-		build --impure .#nixosConfigurations.iso.config.system.build.isoImage
+		build --cores 12 --max-jobs 1 --impure .#images.iso-aarch64
 
 
 .PHONY: iso-publish
@@ -81,6 +81,13 @@ iso-publish: iso ## Build and publish the ISO installer image
 		--progress-bar \
 		--upload-file ./result/iso/*.iso \
 		"https://gitlab.com/api/v4/projects/shadowapex%2Fos-flake/packages/generic/installer/1.0.0/installer.iso"
+
+
+sdcard: ## Build an SD Card installer image
+	nix \
+		--extra-experimental-features nix-command \
+		--extra-experimental-features flakes \
+		build --impure .#images.sdcard
 
 
 .PHONY: clean

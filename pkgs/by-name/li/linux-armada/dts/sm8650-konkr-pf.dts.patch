@@ -1,0 +1,28 @@
+From: Kevin Kreiser <kevinkreiser@gmail.com>
+
+--- a/arch/arm64/boot/dts/qcom/sm8650-konkr-pf.dts
++++ b/arch/arm64/boot/dts/qcom/sm8650-konkr-pf.dts
+@@ -52,3 +52,23 @@
+ 
+ 	status = "okay";
+ };
++
++&i2c4 {
++	touchscreen@48 {
++		compatible = "chipone-tddi";
++		reg = <0x48>;
++
++		interrupt-parent = <&tlmm>;
++		interrupts = <162 IRQ_TYPE_EDGE_FALLING>;
++
++		chipone,irq-gpio = <&tlmm 162 GPIO_ACTIVE_HIGH>;
++		chipone,rst-gpio = <&tlmm 161 GPIO_ACTIVE_HIGH>;
++		chipone,x-res = <1080>;
++		chipone,y-res = <1920>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&ts_irq_default>, <&ts_reset_default>;
++
++		status = "okay";
++	};
++};

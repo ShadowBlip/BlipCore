@@ -1,0 +1,17 @@
+commit a0898be477bcb9db346c0268723c398b1f408e8b
+Author: William Edwards <shadowapex@gmail.com>
+Date:   Sat Jul 18 09:55:04 2026 -0700
+
+    Add Odin 3 DTB to qcom makefile
+
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index b05e8adc0..906f74f67 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -394,3 +394,6 @@ x1p42100-lenovo-thinkbook-16-el2-dtbs	:= x1p42100-lenovo-thinkbook-16.dtb x1-el2
+ dtb-$(CONFIG_ARCH_QCOM)	+= x1p42100-lenovo-thinkbook-16.dtb x1p42100-lenovo-thinkbook-16-el2.dtb
+ x1p64100-microsoft-denali-el2-dtbs	:= x1p64100-microsoft-denali.dtb x1-el2.dtbo
+ dtb-$(CONFIG_ARCH_QCOM)	+= x1p64100-microsoft-denali.dtb x1p64100-microsoft-denali-el2.dtb
++
++# armada-kernel DTBs
++dtb-$(CONFIG_ARCH_QCOM) += cq8725s-ayn-odin3.dtb
