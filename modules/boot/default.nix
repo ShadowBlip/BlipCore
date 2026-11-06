@@ -20,7 +20,6 @@
 
   # Plymouth
   boot.consoleLogLevel = lib.mkDefault 0;
-  boot.initrd.verbose = lib.mkDefault false;
   boot.loader.timeout = lib.mkDefault 0;
   boot.plymouth = lib.mkDefault {
     enable = true;
